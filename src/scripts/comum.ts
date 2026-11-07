@@ -57,19 +57,24 @@ export function confete(origem: Element) {
 /* ---------- CTA fixo ---------- */
 // Aparece depois do primeiro rolar e some enquanto o alvo está na tela.
 for (const barra of document.querySelectorAll<HTMLElement>('[data-sticky]')) {
-  const alvo = document.querySelector(barra.dataset.sticky!);
-  if (!alvo) continue;
-  let alvoNaTela = true;
+  // o alvo pode ser mais de um elemento (seletor com vírgula): basta um à vista
+  const alvos = [...document.querySelectorAll(barra.dataset.sticky!)];
+  if (!alvos.length) continue;
+  const naTela = new Set<Element>(alvos);
   let rolou = false;
   const atualiza = () => {
-    const mostrar = rolou && !alvoNaTela;
+    const mostrar = rolou && naTela.size === 0;
     barra.classList.toggle('on', mostrar);
     barra.inert = !mostrar;
   };
-  new IntersectionObserver(([e]) => {
-    alvoNaTela = e.isIntersecting;
+  const obs = new IntersectionObserver((entradas) => {
+    for (const e of entradas) {
+      if (e.isIntersecting) naTela.add(e.target);
+      else naTela.delete(e.target);
+    }
     atualiza();
-  }).observe(alvo);
+  });
+  alvos.forEach((a) => obs.observe(a));
   const aoRolar = () => {
     if (window.scrollY > 40) {
       rolou = true;

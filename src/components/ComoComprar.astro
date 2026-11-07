@@ -1,0 +1,118 @@
+---
+// "Como comprar": o destaque preto do Instagram virou seção. Quatro passos,
+// sem promessa que o site não cumpre.
+import Icone from './Icone.astro';
+
+const passos = [
+  { t: 'Ache a oferta', d: 'Digite na busca o número que aparece no vídeo, ou toque num dos círculos lá em cima.' },
+  { t: 'Toque no botão da loja', d: 'Ele abre a Shopee, o Mercado Livre ou a Amazon direto no produto.' },
+  { t: 'Tem cupom? Já vai copiado', d: 'Quando a oferta tem cupom, o site copia ele no toque do botão. É só colar no carrinho.' },
+  { t: 'Compre na loja', d: 'Pagamento, entrega e garantia são da própria loja. Confira preço e frete antes de pagar.' },
+];
+---
+
+<section class="como dark" id="como-comprar" aria-labelledby="como-titulo">
+  <div class="wrap como__in">
+    <svg class="como__carrinho" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M2.8 4h2.6l2.2 10.2a1.6 1.6 0 0 0 1.57 1.3h8.1a1.6 1.6 0 0 0 1.55-1.2L20.6 7.6H6.3"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.3"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+      <circle cx="9.6" cy="19.4" r="1.5" fill="none" stroke="currentColor" stroke-width="2.3"></circle>
+      <circle cx="16.6" cy="19.4" r="1.5" fill="none" stroke="currentColor" stroke-width="2.3"></circle>
+    </svg>
+    <p class="eyebrow">Em 4 passos</p>
+    <h2 id="como-titulo">Como <em>comprar</em></h2>
+    <ol class="como__passos">
+      {
+        passos.map((p, i) => (
+          <li class="como__passo">
+            <span class="como__num">{i + 1}</span>
+            <span>
+              <strong>{p.t}</strong>
+              <span class="muted">{p.d}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+    <button type="button" class="btn btn--gold" data-ir-busca>
+      <Icone nome="lupa" /> Buscar pelo número
+    </button>
+  </div>
+</section>
+
+<style>
+  .como {
+    position: relative;
+    overflow: hidden;
+    scroll-margin-top: 0;
+  }
+  .como__in {
+    display: grid;
+    gap: 12px;
+    padding-top: 46px;
+    padding-bottom: 50px;
+  }
+  .como__carrinho {
+    position: absolute;
+    right: -6px;
+    top: 18px;
+    width: 110px;
+    height: 110px;
+    color: var(--gold);
+    opacity: 0.16;
+    rotate: -10deg;
+  }
+  .como .eyebrow {
+    color: var(--gold);
+  }
+  .como__passos {
+    display: grid;
+    gap: 12px;
+    margin: 10px 0 14px;
+    counter-reset: passo;
+  }
+  .como__passo {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    padding: 14px 14px 14px 12px;
+    background: #1d1b18;
+    border: 2.5px solid #3a3631;
+    border-radius: 16px;
+  }
+  .como__passo strong {
+    display: block;
+    margin-bottom: 3px;
+    font: 700 16.5px/1.25 var(--sans);
+  }
+  .como__passo .muted {
+    display: block;
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  .como__num {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    background: var(--gold);
+    color: var(--ink);
+    border: 2.5px solid var(--ink);
+    border-radius: 50%;
+    box-shadow: 0 3px 0 0 #000;
+    font: 400 20px/1 var(--display);
+  }
+  .como__passo:nth-child(2n) .como__num {
+    background: var(--red);
+    color: #fff;
+  }
+  .como .btn {
+    box-shadow: 0 8px 0 0 #000;
+  }
+</style>

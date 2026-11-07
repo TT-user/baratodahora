@@ -1,0 +1,249 @@
+---
+// Os destaques do Instagram do canal, em versão de filtro: círculo com aro
+// cinza, "BARATO DA HORA" miúdo, ícone e o nome na Anton (como as capas).
+// Hoje, as categorias com oferta, Até R$50 e Como comprar. Um toque filtra a
+// lista; outro toque no mesmo volta para todas.
+import { caminho, letreiro } from '../lib/marca.mjs';
+import { CATEGORIA, CATEGORIAS } from '../lib/catalogo.mjs';
+
+interface Props {
+  /** categorias que têm oferta ativa */
+  categorias: string[];
+  /** alguma oferta ativa custa até R$ 50 */
+  temAte50: boolean;
+}
+const { categorias, temAte50 } = Astro.props;
+
+const TRACO = 'fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"';
+const ICONES: Record<string, string> = {
+  hoje: `<path ${TRACO} d="M13.4 2.5 5.5 13.2h5.6L9.8 21.5l8.4-11h-5.7l.9-8Z"/>`,
+  casa: `<path ${TRACO} d="M3.5 11 12 3.8l8.5 7.2v9.2h-17Z"/><path ${TRACO} d="M9.3 20.2v-6.4h5.4v6.4"/>`,
+  carro: `<path ${TRACO} d="m5 11.2 1.9-4.6a2 2 0 0 1 1.85-1.2h6.5a2 2 0 0 1 1.85 1.2l1.9 4.6"/><rect ${TRACO} x="3.2" y="11" width="17.6" height="6" rx="2"/><circle ${TRACO} cx="7.6" cy="17.6" r="1.7"/><circle ${TRACO} cx="16.4" cy="17.6" r="1.7"/>`,
+  ate50: `<path ${TRACO} d="M3.5 4.8v6.1c0 .43.17.83.47 1.13l8 8c.62.63 1.64.63 2.26 0l5.97-5.97c.63-.62.63-1.64 0-2.26l-8-8a1.6 1.6 0 0 0-1.13-.47H5a1.5 1.5 0 0 0-1.5 1.5Z"/><circle cx="8" cy="7.9" r="1.7" fill="currentColor"/>`,
+  tech: `<rect ${TRACO} x="6.5" y="2.8" width="11" height="18.4" rx="2.6"/><path ${TRACO} d="M10.4 17.6h3.2"/>`,
+  cozinha: `<circle ${TRACO} cx="10" cy="13" r="6.4"/><path ${TRACO} d="m16.2 11.4 5.3-2.6"/>`,
+  ferramentas: `<path ${TRACO} d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76Z"/>`,
+  beleza: `<rect ${TRACO} x="8" y="12" width="8" height="9" rx="1.2"/><path ${TRACO} d="M9.6 12V7.6L14.4 4v8"/>`,
+  pet: `<ellipse ${TRACO} cx="12" cy="16" rx="4.2" ry="3.6"/><circle ${TRACO} cx="6.2" cy="10.6" r="1.6"/><circle ${TRACO} cx="9.6" cy="6.8" r="1.6"/><circle ${TRACO} cx="14.4" cy="6.8" r="1.6"/><circle ${TRACO} cx="17.8" cy="10.6" r="1.6"/>`,
+  infantil: `<circle ${TRACO} cx="12" cy="13.6" r="6"/><circle ${TRACO} cx="6.8" cy="7.2" r="2.2"/><circle ${TRACO} cx="17.2" cy="7.2" r="2.2"/><circle ${TRACO} cx="12" cy="15.4" r="1.5"/>`,
+  outros: `<path ${TRACO} d="M3.5 7.5 12 3.5l8.5 4v9L12 20.5l-8.5-4Z"/><path ${TRACO} d="M3.5 7.5 12 11.5l8.5-4M12 11.5v9"/>`,
+  comprar: `<path ${TRACO} d="M2.8 4h2.6l2.2 10.2a1.6 1.6 0 0 0 1.57 1.3h8.1a1.6 1.6 0 0 0 1.55-1.2L20.6 7.6H6.3"/><circle ${TRACO} cx="9.6" cy="19.4" r="1.5"/><circle ${TRACO} cx="16.6" cy="19.4" r="1.5"/>`,
+};
+
+type Tema = 'verm' | 'ouro' | 'preto';
+type Item = { id: string; rotulo: string; linhas: string[]; tema: Tema; filtro?: string; href?: string };
+
+// a ordem das capas no Instagram: Hoje, Casa, Carro, Até R$50, Tech, Como comprar
+const ORDEM_IG = ['casa', 'carro', 'ate50', 'tech'];
+const cat = (id: string): Item => ({
+  id,
+  rotulo: CATEGORIA[id as keyof typeof CATEGORIA].nome,
+  linhas: [CATEGORIA[id as keyof typeof CATEGORIA].nome.toUpperCase()],
+  tema: 'ouro',
+  filtro: `cat:${id}`,
+});
+const meio: Item[] = [];
+for (const id of ORDEM_IG) {
+  if (id === 'ate50') {
+    if (temAte50) meio.push({ id, rotulo: 'Até R$50', linhas: ['ATÉ R$50'], tema: 'ouro', filtro: 'ate50' });
+  } else if (categorias.includes(id)) meio.push(cat(id));
+}
+for (const id of CATEGORIAS) if (!ORDEM_IG.includes(id) && categorias.includes(id)) meio.push(cat(id));
+
+const itens: Item[] = [
+  { id: 'hoje', rotulo: 'Hoje', linhas: ['HOJE'], tema: 'verm', filtro: 'hoje' },
+  ...meio,
+  { id: 'comprar', rotulo: 'Como comprar', linhas: ['COMO', 'COMPRAR'], tema: 'preto', href: '#como-comprar' },
+];
+
+// cada palavra na Anton, com altura limitada pela largura do círculo
+function titulo(linhas: string[]) {
+  const alturaMax = linhas.length > 1 ? 12 : 15;
+  return linhas
+    .map((t) => {
+      const { largura, altura } = caminho(t);
+      const h = Math.min(alturaMax, (50 / largura) * altura);
+      return `<span style="height:${Math.round(h * 10) / 10}px">${letreiro(t)}</span>`;
+    })
+    .join('');
+}
+---
+
+<nav class="bolinhas" aria-label="Atalhos de ofertas">
+  <ul class="bolinhas__trilho" id="chips">
+    {
+      itens.map((i) => {
+        const miolo = (
+          <>
+            <span class="bolinha__aro">
+              <span class={`bolinha__disco bolinha__disco--${i.tema}`}>
+                <span class="bolinha__marca" aria-hidden="true">
+                  Barato da Hora
+                </span>
+                <svg class={`bolinha__icone bolinha__icone--${i.id}`} viewBox="0 0 24 24" aria-hidden="true" set:html={ICONES[i.id] ?? ICONES.outros} />
+                <span class="bolinha__titulo" aria-hidden="true" set:html={titulo(i.linhas)} />
+              </span>
+            </span>
+            <span class="bolinha__rotulo">{i.rotulo}</span>
+          </>
+        );
+        return (
+          <li>
+            {i.href ? (
+              <a class="bolinha" href={i.href}>
+                {miolo}
+              </a>
+            ) : (
+              <button type="button" class="bolinha" data-filtro={i.filtro} aria-pressed="false">
+                {miolo}
+              </button>
+            )}
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>
+
+<style>
+  .bolinhas {
+    margin: 0 -20px;
+  }
+  .bolinhas__trilho {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 6px 20px 8px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+  .bolinhas__trilho::-webkit-scrollbar {
+    display: none;
+  }
+  /* centraliza quando cabe, rola de lado quando não cabe */
+  .bolinhas__trilho > li:first-child {
+    margin-left: auto;
+  }
+  .bolinhas__trilho > li:last-child {
+    margin-right: auto;
+  }
+  .bolinhas__trilho > li {
+    flex: none;
+    scroll-snap-align: start;
+    scroll-margin-left: 20px;
+  }
+  .bolinha {
+    display: grid;
+    justify-items: center;
+    gap: 7px;
+    width: 80px;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--ink);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .bolinha__aro {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 80px;
+    height: 80px;
+    padding: 3px;
+    border-radius: 50%;
+    background: #d4d4d4;
+    transition:
+      transform 0.25s var(--mola),
+      background-color 0.2s ease;
+  }
+  /* "Hoje" com oferta nova: aro colorido girando, como story não visto */
+  .bolinha--tem .bolinha__aro::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(var(--gold), var(--red), var(--orange), var(--gold));
+    animation: gira 3s linear infinite;
+  }
+  .bolinha__disco {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 2px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border: 3px solid #fff;
+    border-radius: 50%;
+  }
+  .bolinha__disco--verm {
+    background: var(--red);
+    color: #fff;
+  }
+  .bolinha__disco--ouro {
+    background: var(--gold);
+    color: var(--ink);
+  }
+  .bolinha__disco--preto {
+    background: #111;
+    color: #fff;
+  }
+  .bolinha__marca {
+    font: 400 4.6px/1 var(--display);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .bolinha__icone {
+    width: 22px;
+    height: 22px;
+  }
+  .bolinha__disco--verm .bolinha__icone,
+  .bolinha__disco--preto .bolinha__icone {
+    color: var(--gold);
+  }
+  .bolinha__icone--ate50 {
+    color: var(--red);
+  }
+  .bolinha__titulo {
+    display: grid;
+    justify-items: center;
+    gap: 1px;
+  }
+  .bolinha__titulo :global(span) {
+    display: block;
+  }
+  .bolinha__titulo :global(svg) {
+    display: block;
+    width: auto;
+    height: 100%;
+  }
+  .bolinha__rotulo {
+    font: 500 13.5px/1.15 var(--sans);
+    text-align: center;
+  }
+  @media (hover: hover) {
+    .bolinha:hover .bolinha__aro {
+      transform: translateY(-3px) rotate(-4deg);
+    }
+  }
+  .bolinha:active .bolinha__aro {
+    transform: scale(0.94);
+  }
+  /* filtro ligado: aro preto grosso, nome em negrito sublinhado */
+  .bolinha[aria-pressed='true'] .bolinha__aro {
+    background: var(--ink);
+    transform: scale(1.06);
+  }
+  .bolinha[aria-pressed='true'] .bolinha__aro::before {
+    display: none;
+  }
+  .bolinha[aria-pressed='true'] .bolinha__rotulo {
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+</style>

@@ -1,7 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import Busca from '../components/Busca.astro';
-import Chips from '../components/Chips.astro';
+import ComoComprar from '../components/ComoComprar.astro';
+import Bolinhas from '../components/Bolinhas.astro';
 import Deco from '../components/Deco.astro';
 import Destaque from '../components/Destaque.astro';
 import FaixaTopo from '../components/FaixaTopo.astro';
@@ -55,8 +56,11 @@ const descricao = `Viu a oferta no vídeo? Busque pelo número e vá direto para
   <Marquee />
 
   <main id="conteudo" class="wrap">
-    <section class="filtros" aria-label="Categorias">
-      <Chips categorias={categoriasComOferta(ativas)} total={ativas.length} />
+    <section class="filtros" aria-label="Atalhos">
+      <Bolinhas
+        categorias={categoriasComOferta(ativas).map((c) => c.id)}
+        temAte50={ativas.some((o) => !!o.precoPor && o.precoPor <= 50)}
+      />
     </section>
 
     {destaque && <Destaque oferta={destaque} />}
@@ -67,6 +71,9 @@ const descricao = `Viu a oferta no vídeo? Busque pelo número e vá direto para
           <p class="eyebrow">Do vídeo mais novo pro mais antigo</p>
           <h2 id="lista-titulo">Ofertas dos vídeos</h2>
         </div>
+        <button type="button" class="ofertas__limpar" id="limpar-filtro" hidden>
+          <Icone nome="fechar" /> Ver todas
+        </button>
         <p class="ofertas__status" id="busca-status" aria-live="polite"></p>
       </div>
 
@@ -81,8 +88,8 @@ const descricao = `Viu a oferta no vídeo? Busque pelo número e vá direto para
       </ol>
 
       <div class="vazio brick" id="vazio" hidden>
-        <p class="vazio__titulo">Não achei 😕 Confere o número no vídeo</p>
-        <p class="muted">O número aparece no começo de cada vídeo, tipo “Oferta {maisNova?.numero ?? 231}”.</p>
+        <p class="vazio__titulo" data-vazio-titulo>Não achei 😕 Confere o número no vídeo</p>
+        <p class="muted" data-vazio-dica>O número aparece no começo de cada vídeo, tipo “Oferta {maisNova?.numero ?? 1}”.</p>
         <button type="button" class="btn btn--sm btn--paper" data-limpar-tudo>Ver todas as ofertas</button>
       </div>
 
@@ -96,19 +103,21 @@ const descricao = `Viu a oferta no vídeo? Busque pelo número e vá direto para
       </template>
     </section>
 
+    <Recorte />
     {maiorNumero > 0 && <Stats postadas={maiorNumero} />}
   </main>
+
+  <ComoComprar />
 
   <Grupo />
 
   <div class="wrap">
-    <Recorte />
     <Faq />
   </div>
 
   <Rodape />
 
-  <Sticky alvo="#busca-form">
+  <Sticky alvo="#busca-form, #como-comprar .btn">
     <button type="button" class="btn btn--gold" data-ir-busca>
       <Icone nome="lupa" /> Buscar pelo número
     </button>
@@ -153,7 +162,7 @@ const descricao = `Viu a oferta no vídeo? Busque pelo número e vá direto para
     font-size: 16.5px;
   }
   .filtros {
-    padding-top: 28px;
+    padding-top: 22px;
   }
   .ofertas {
     padding-top: 40px;
@@ -171,6 +180,26 @@ const descricao = `Viu a oferta no vídeo? Busque pelo número e vá direto para
     color: var(--red-txt);
     font-size: 11.5px;
     letter-spacing: 0.14em;
+  }
+  .ofertas__limpar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 6px 12px;
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    border-radius: 12px;
+    box-shadow: 0 3px 0 0 var(--ink);
+    font: 700 14px/1 var(--sans);
+  }
+  .ofertas__limpar :global(.ico) {
+    width: 14px;
+    height: 14px;
+  }
+  .ofertas__limpar:active {
+    transform: translateY(3px);
+    box-shadow: none;
   }
   .ofertas__status {
     color: var(--muted);

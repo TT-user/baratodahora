@@ -499,48 +499,6 @@ a.brick:active,
   color: #fff;
 }
 
-/* ---------- .chip: filtros ---------- */
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 44px;
-  padding: 8px 13px;
-  background: var(--paper);
-  border: 2.5px solid var(--ink);
-  border-radius: 12px;
-  box-shadow: 0 3px 0 0 var(--ink);
-  font: 700 13px/1 var(--sans);
-  -webkit-tap-highlight-color: transparent;
-  transition:
-    transform 0.16s var(--mola),
-    box-shadow 0.12s ease,
-    background-color 0.12s ease;
-}
-.chip small {
-  font-weight: 500;
-  color: var(--muted);
-}
-.chip:active {
-  transform: translateY(3px);
-  box-shadow: 0 0 0 0 var(--ink);
-}
-.chip.hot,
-.chip[aria-pressed='true'] {
-  background: var(--gold);
-  transform: translateY(1px) rotate(-1.5deg);
-  box-shadow: 0 2px 0 0 var(--ink);
-}
-.chip.hot small,
-.chip[aria-pressed='true'] small {
-  color: var(--ink);
-}
-
 /* ---------- .stat: número grande ---------- */
 .stats {
   display: grid;

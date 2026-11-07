@@ -3,7 +3,8 @@
 // Existe só no `npm run dev` (integrations/styleguide.mjs).
 import Base from '../layouts/Base.astro';
 import BotaoLoja from '../components/BotaoLoja.astro';
-import Chips from '../components/Chips.astro';
+import Bolinhas from '../components/Bolinhas.astro';
+import ComoComprar from '../components/ComoComprar.astro';
 import Cupom from '../components/Cupom.astro';
 import Deco from '../components/Deco.astro';
 import Destaque from '../components/Destaque.astro';
@@ -21,7 +22,7 @@ import OfertaItem from '../components/OfertaItem.astro';
 import Preco from '../components/Preco.astro';
 import Redes from '../components/Redes.astro';
 import Stats from '../components/Stats.astro';
-import { categoriasComOferta, todasAsOfertas } from '../lib/ofertas';
+import { todasAsOfertas } from '../lib/ofertas';
 
 const todas = await todasAsOfertas();
 const ativas = todas.filter((o) => o.ativo);
@@ -160,8 +161,8 @@ const lojasDemo = [
     </section>
 
     <section class="wrap bloco">
-      <h2>.chip</h2>
-      <Chips categorias={categoriasComOferta(ativas)} total={ativas.length} />
+      <h2>Círculos (destaques do Instagram)</h2>
+      <Bolinhas categorias={['casa', 'carro', 'tech', 'cozinha', 'pet']} temAte50 />
     </section>
 
     <section class="wrap bloco">
@@ -191,6 +192,8 @@ const lojasDemo = [
       <div class="wrap"><h2>.dark (grupo, só aparece com link)</h2></div>
       <Grupo forcar />
     </section>
+
+    <ComoComprar />
 
     <div class="wrap"><Faq /></div>
 

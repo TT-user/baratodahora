@@ -2,9 +2,10 @@
 export const site = {
   nome: "Barato da Hora",
   slogan: "Achadinhos que valem cada centavo.", // o mesmo do banner do canal
-  // Domínio oficial. Enquanto ele não aponta para a Vercel, o build lá usa o
-  // endereço de produção que a própria Vercel informa (ver urlDoSite abaixo).
-  dominio: "https://baratodahora.com.br", // TODO: registrar e apontar na Vercel
+  // Endereço público. É o que o /nova-oferta devolve como link curto.
+  // TODO: quando baratodahora.com.br apontar para a Vercel, trocar aqui.
+  // (Canonical, sitemap e prévias já seguem sozinhos o domínio de produção.)
+  dominio: "https://baratodahora.vercel.app",
   avatar: "/brand/avatar.webp", // persona sem fundo (scripts/desenhos/recorta-persona.py)
   avatarAlt: "Apresentador do Barato da Hora, empolgado, segurando caixas de encomenda",
   rosto: "/brand/rosto.webp",   // rosto da persona, para o avatar redondo

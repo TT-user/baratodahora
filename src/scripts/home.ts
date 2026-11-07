@@ -32,6 +32,10 @@ const aviso = $('busca-status');
 const atalho = $<HTMLAnchorElement>('atalho');
 const destaque = $('destaque');
 const chips = $('chips');
+const tituloLista = $('lista-titulo');
+const limparFiltro = $<HTMLButtonElement>('limpar-filtro');
+const vazioTitulo = vazio?.querySelector<HTMLElement>('[data-vazio-titulo]');
+const vazioDica = vazio?.querySelector<HTMLElement>('[data-vazio-dica]');
 const limpar = form?.querySelector<HTMLButtonElement>('[data-limpar]');
 
 const norm = (s: string) =>
@@ -53,7 +57,9 @@ const reais = (v: number) =>
 
 let indice: Item[] | null = null;
 let baixando: Promise<Item[]> | null = null;
-let categoria = 'todos';
+// 'todos', 'hoje' (últimas 24 h), 'ate50' (até R$ 50) ou 'cat:<categoria>'
+let filtro = 'todos';
+const TITULO_PADRAO = tituloLista?.textContent ?? '';
 let termo = '';
 let mostrando = POR_VEZ;
 
@@ -73,8 +79,16 @@ function baixarIndice(): Promise<Item[]> {
 }
 
 /* ---------- filtro ---------- */
+const HORAS_HOJE = 24;
+function passaFiltro(o: Item): boolean {
+  if (filtro === 'hoje') return Date.now() - msData(o.p) < HORAS_HOJE * 3600_000;
+  if (filtro === 'ate50') return !!o.por && o.por <= 50;
+  if (filtro.startsWith('cat:')) return o.c === filtro.slice(4);
+  return true;
+}
+
 function filtrar(itens: Item[]): Item[] {
-  const daCategoria = categoria === 'todos' ? itens : itens.filter((o) => o.c === categoria);
+  const daCategoria = itens.filter(passaFiltro);
   const q = norm(termo).replace(/^#/, '');
   if (!q) return daCategoria.filter((o) => o.a);
 
@@ -128,8 +142,12 @@ function desenhar() {
   const resultado = filtrar(indice);
   lista.replaceChildren(...resultado.slice(0, mostrando).map(card));
   if (vazio) vazio.hidden = resultado.length > 0;
+  if (vazioTitulo && vazioDica) {
+    vazioTitulo.textContent = termo ? 'Não achei 😕 Confere o número no vídeo' : filtro === 'hoje' ? 'Ainda não saiu oferta hoje' : 'Nada por aqui ainda';
+    vazioDica.hidden = !termo;
+  }
   if (verMais) verMais.hidden = resultado.length <= mostrando;
-  if (destaque) destaque.hidden = !!termo || categoria !== 'todos';
+  if (destaque) destaque.hidden = !!termo || filtro !== 'todos';
   if (aviso) {
     aviso.textContent = termo
       ? `${resultado.length} ${resultado.length === 1 ? 'oferta encontrada' : 'ofertas encontradas'}`
@@ -196,13 +214,26 @@ for (const b of form?.querySelectorAll<HTMLButtonElement>('[data-exemplo]') ?? [
   });
 }
 
-chips?.addEventListener('click', (ev) => {
-  const chip = (ev.target as Element).closest<HTMLButtonElement>('[data-cat]');
-  if (!chip) return;
-  for (const c of chips.querySelectorAll('[data-cat]')) c.setAttribute('aria-pressed', String(c === chip));
-  categoria = chip.dataset.cat!;
+function escolherFiltro(novo: string, botao?: HTMLElement | null) {
+  filtro = novo;
+  for (const b of chips?.querySelectorAll<HTMLElement>('[data-filtro]') ?? []) {
+    b.setAttribute('aria-pressed', String(b.dataset.filtro === filtro));
+  }
+  if (tituloLista) {
+    const nome = botao?.querySelector('.bolinha__rotulo')?.textContent?.trim();
+    tituloLista.textContent = filtro === 'todos' ? TITULO_PADRAO : filtro === 'hoje' ? 'Ofertas de hoje' : (nome ?? TITULO_PADRAO);
+  }
+  if (limparFiltro) limparFiltro.hidden = filtro === 'todos';
   atualizar();
+}
+
+// toque no círculo liga o filtro; outro toque no mesmo volta para todas
+chips?.addEventListener('click', (ev) => {
+  const botao = (ev.target as Element).closest<HTMLButtonElement>('[data-filtro]');
+  if (!botao) return;
+  escolherFiltro(botao.dataset.filtro === filtro ? 'todos' : botao.dataset.filtro!, botao);
 });
+limparFiltro?.addEventListener('click', () => escolherFiltro('todos'));
 
 verMais?.addEventListener('click', async () => {
   verMais.disabled = true;
@@ -215,17 +246,17 @@ verMais?.addEventListener('click', async () => {
   }
 });
 
-document.querySelector('[data-ir-busca]')?.addEventListener('click', () => {
-  form?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  campo?.focus({ preventScroll: true });
-});
+for (const b of document.querySelectorAll('[data-ir-busca]')) {
+  b.addEventListener('click', () => {
+    form?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    campo?.focus({ preventScroll: true });
+  });
+}
 
 document.querySelector('[data-limpar-tudo]')?.addEventListener('click', () => {
   if (campo) campo.value = '';
   termo = '';
-  categoria = 'todos';
-  for (const c of chips?.querySelectorAll('[data-cat]') ?? []) c.setAttribute('aria-pressed', String(c.getAttribute('data-cat') === 'todos'));
-  atualizar();
+  escolherFiltro('todos');
 });
 
 /* ---------- início ---------- */
@@ -234,6 +265,12 @@ for (const a of lista?.querySelectorAll<HTMLElement>('a[data-pub]') ?? []) {
   const novo = a.querySelector<HTMLElement>('[data-f="novo"]');
   if (novo && !a.classList.contains('item--fim')) novo.hidden = !ehNova(a.dataset.pub!);
 }
+
+// "Hoje" ganha o aro de story novo quando saiu oferta nas últimas 24 h
+const temHoje = [...(lista?.querySelectorAll<HTMLElement>('a[data-pub]') ?? [])].some(
+  (a) => !a.classList.contains('item--fim') && Date.now() - msData(a.dataset.pub!) < HORAS_HOJE * 3600_000,
+);
+chips?.querySelector('[data-filtro="hoje"]')?.classList.toggle('bolinha--tem', temHoje);
 
 // Veio de um link com ?q= (do 404 ou de um formulário sem JavaScript)
 const q = new URLSearchParams(location.search).get('q');
