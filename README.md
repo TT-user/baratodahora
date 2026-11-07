@@ -108,15 +108,15 @@ Regras (o build recusa a oferta que não seguir, dizendo o que está errado):
 - `numero` único. `slug` opcional: sem ele, sai do título.
 - `loja`: `shopee`, `mercadolivre`, `amazon`, `magalu`, `aliexpress` ou `outra`.
 - **Exatamente 1** link `principal`; quantas `alternativa` quiser.
-- `categoria`: `casa`, `cozinha`, `ferramentas`, `beleza`, `tech`, `pet`, `infantil` ou `outros`.
+- `categoria`: `casa`, `cozinha`, `carro`, `ferramentas`, `beleza`, `tech`, `pet`, `infantil` ou `outros`.
 - `precoDe`, `precoPor`, `cupom`, `videos` e `nota` são opcionais. O **% de desconto é calculado**,
   nunca digitado; `precoDe` precisa ser maior que `precoPor`.
 - `publicadoEm`: data (`2026-11-07`) ou data e hora. O selo NOVO aparece por 48 horas.
 - A imagem precisa existir em `public/`.
 
-> **As seis ofertas que vêm no projeto (#226 a #231) são de exemplo**, com preços inventados e
-> links para a busca de cada loja. Apague os JSON delas e as imagens `public/ofertas/226.webp` a
-> `231.webp` antes de divulgar o site. A numeração das suas continua de onde você parar.
+> As seis ofertas de exemplo do começo do projeto (#226 a #231, preços inventados) saíram do site
+> quando entrou a primeira oferta de verdade. Estão no primeiro commit do git, se precisar delas
+> para testar o visual com a lista cheia.
 
 ---
 
@@ -144,8 +144,8 @@ O primeiro recorta a pessoa do fundo e separa o rosto (`marca/`); o segundo gera
 `public/brand/avatar.webp` (moldura do topo), `avatar-420.webp` e `rosto.webp` (avatar redondo da
 página da oferta). A prévia do WhatsApp da home é refeita sozinha no build.
 
-`npm run desenhos` também refaz o favicon e as seis imagens de exemplo, que são desenhos 2D em
-SVG (`scripts/desenhos/desenhos.mjs`).
+`npm run desenhos` também refaz o favicon. As imagens das ofertas de exemplo (desenhos 2D em SVG,
+`scripts/desenhos/desenhos.mjs`) saem com `npm run desenhos -- --exemplos`.
 
 ---
 
@@ -169,8 +169,9 @@ procura a oferta e redireciona do mesmo jeito.
    www e um **CNAME** para o `www`). Crie exatamente esses no lugar onde o domínio foi registrado
    (no Registro.br: **Editar zona DNS**).
 3. Espere a Vercel mostrar "Valid Configuration" (de minutos a algumas horas).
-4. Se o domínio for outro, troque `dominio` em `src/site.config.ts`: ele vai no canonical, no
-   sitemap e nas prévias do WhatsApp.
+4. Troque `dominio` em `src/site.config.ts` para o domínio novo: é o endereço que o
+   `/nova-oferta` devolve como link curto. Canonical, sitemap e prévias do WhatsApp já seguem
+   sozinhos o domínio de produção que a Vercel informa no build.
 
 ---
 

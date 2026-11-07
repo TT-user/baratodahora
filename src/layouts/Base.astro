@@ -8,7 +8,7 @@ import '@fontsource/dm-sans/latin-700.css';
 import '../styles/global.css';
 import fonteTitulo from '@fontsource/archivo-black/files/archivo-black-latin-400-normal.woff2?url';
 import fonteTexto from '@fontsource/dm-sans/files/dm-sans-latin-400-normal.woff2?url';
-import { site } from '../site.config';
+import { site, urlDoSite } from '../site.config';
 
 interface Props {
   titulo: string;
@@ -31,7 +31,7 @@ const {
   classe,
 } = Astro.props;
 
-const absoluta = (p: string) => new URL(p, site.dominio).href;
+const absoluta = (p: string) => new URL(p, urlDoSite).href;
 const canonical = absoluta(caminho);
 const imagemOg = absoluta(og.imagem);
 const rastreio = site.rastreio.ativo ? site.rastreio.provedor : undefined;

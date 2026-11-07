@@ -24,4 +24,5 @@ O README explica tudo para humanos; aqui ficam as regras para quem mexe no códi
   parar fora da tela); o `prefers-reduced-motion` do global.css desliga tudo.
 - Link de loja sempre pelo `<BotaoLoja>` (aba nova, `rel="nofollow sponsored noopener"`,
   `data-loja`/`data-oferta`).
-- As ofertas #226 a #231 são de exemplo e devem ser apagadas antes de divulgar o site.
+- Endereço absoluto (canonical, OG, sitemap) sempre por `urlDoSite` de `src/site.config.ts`, nunca
+  `site.dominio` direto: no build da Vercel ele vira o domínio de produção do projeto.

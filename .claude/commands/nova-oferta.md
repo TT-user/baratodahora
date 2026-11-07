@@ -16,7 +16,7 @@ O texto vem do jeito que eu escrevo, por exemplo:
 | O que eu escrevi | Argumento do script |
 |---|---|
 | o nome do produto (normalmente o começo) | `--titulo "..."`, com iniciais maiúsculas nas palavras principais ("Passador a Vapor Rotativo") |
-| casa, cozinha, ferramentas, beleza, tech, pet, infantil, outros | `--categoria`; se eu não disser, escolha pela natureza do produto |
+| casa, cozinha, carro, ferramentas, beleza, tech, pet, infantil, outros | `--categoria`; se eu não disser, escolha pela natureza do produto |
 | a PRIMEIRA loja com link (ou a que eu chamar de "do vídeo") | `--principal "loja=URL"` |
 | as outras lojas com link | `--alt "loja=URL"` (uma por loja); se eu der um texto para o botão, `--alt "loja=URL\|texto"` |
 | apelidos de loja | shopee, ml / mercado livre, amazon / amz, magalu, ali / aliexpress, outra |

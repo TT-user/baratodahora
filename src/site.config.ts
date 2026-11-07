@@ -2,7 +2,9 @@
 export const site = {
   nome: "Barato da Hora",
   slogan: "Achadinhos que valem cada centavo.", // o mesmo do banner do canal
-  dominio: "https://baratodahora.com.br", // TODO: confirmar domínio
+  // Domínio oficial. Enquanto ele não aponta para a Vercel, o build lá usa o
+  // endereço de produção que a própria Vercel informa (ver urlDoSite abaixo).
+  dominio: "https://baratodahora.com.br", // TODO: registrar e apontar na Vercel
   avatar: "/brand/avatar.webp", // persona sem fundo (scripts/desenhos/recorta-persona.py)
   avatarAlt: "Apresentador do Barato da Hora, empolgado, segurando caixas de encomenda",
   rosto: "/brand/rosto.webp",   // rosto da persona, para o avatar redondo
@@ -24,3 +26,11 @@ export const site = {
     umamiId: "", // id do site no Umami, se o provedor for "umami"
   },
 };
+
+/**
+ * Endereço que vai no canonical, no sitemap e nas prévias do WhatsApp.
+ * No build da Vercel é o domínio de produção do projeto (o domínio próprio,
+ * quando ele estiver ligado lá, ou o .vercel.app). Fora dela, `site.dominio`.
+ */
+const producaoVercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+export const urlDoSite = producaoVercel ? `https://${producaoVercel}` : site.dominio;

@@ -23,7 +23,7 @@ import {
   urlOferta,
   type Oferta,
 } from '../../lib/ofertas';
-import { site } from '../../site.config';
+import { site, urlDoSite } from '../../site.config';
 
 export async function getStaticPaths() {
   const todas = await todasAsOfertas();
@@ -65,7 +65,7 @@ const descricao = encerrada
     ]
       .filter(Boolean)
       .join(' ');
-const urlAbsoluta = new URL(urlOferta(o), site.dominio).href;
+const urlAbsoluta = new URL(urlOferta(o), urlDoSite).href;
 const textoCompartilhar = o.precoPor
   ? `Olha esse achadinho: ${o.titulo} por ${reais(o.precoPor)}`
   : `Olha esse achadinho: ${o.titulo}`;

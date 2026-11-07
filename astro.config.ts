@@ -1,12 +1,12 @@
 import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
-import { site } from './src/site.config';
+import { urlDoSite } from './src/site.config';
 import { atalhosPorNumero } from './integrations/ofertas-no-disco.mjs';
 import miniaturas from './integrations/miniaturas.mjs';
 import styleguide from './integrations/styleguide.mjs';
 
 export default defineConfig({
-  site: site.dominio,
+  site: urlDoSite,
   // Astro 7 junta texto de elementos vizinhos por padrão ('jsx'); aqui
   // mantemos o espaço entre eles, como no HTML ("R$ 199 R$ 89").
   compressHTML: true,

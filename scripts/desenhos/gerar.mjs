@@ -1,6 +1,7 @@
 // Gera as imagens de public/ a partir dos desenhos (desenhos.mjs) e da
 // persona recortada (marca/).
-//   npm run desenhos                         → tudo
+//   npm run desenhos                         → persona e favicons
+//   npm run desenhos -- --exemplos           → também as imagens das ofertas de exemplo
 //   npm run desenhos -- --folha caminho.png  → também uma folha de contato
 // A persona: rode antes `python scripts/desenhos/recorta-persona.py marca/<foto>`.
 import fs from 'node:fs/promises';
@@ -84,6 +85,7 @@ async function folhaDeContato(saida) {
 
 await persona();
 await favicons();
-await produtos();
+// as imagens das seis ofertas de exemplo só saem com --exemplos
+if (process.argv.includes('--exemplos')) await produtos();
 const i = process.argv.indexOf('--folha');
 if (i > -1 && process.argv[i + 1]) await folhaDeContato(path.resolve(process.argv[i + 1]));

@@ -1,12 +1,12 @@
 import type { APIRoute } from 'astro';
 import { msData, ofertasAtivas, urlOferta } from '../lib/ofertas';
-import { site } from '../site.config';
+import { urlDoSite } from '../site.config';
 
 // Home, privacidade e as ofertas ativas. Os atalhos /231 (redirects) e as
 // ofertas encerradas (noindex) ficam de fora.
 export const GET: APIRoute = async () => {
   const ativas = await ofertasAtivas();
-  const abs = (p: string) => new URL(p, site.dominio).href;
+  const abs = (p: string) => new URL(p, urlDoSite).href;
   const dia = (v: string) => new Date(msData(v)).toISOString().slice(0, 10);
   const maisRecente = ativas[0] ? dia(ativas[0].publicadoEm) : undefined;
 

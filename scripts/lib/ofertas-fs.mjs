@@ -45,6 +45,7 @@ export function acharPorNumero(numero) {
 
 /** Grava com as chaves na ordem do modelo e os links numa linha cada. */
 export function gravar(arquivo, dados) {
+  fs.mkdirSync(path.dirname(arquivo), { recursive: true });
   const ordenado = {};
   for (const k of ORDEM) if (dados[k] !== undefined) ordenado[k] = dados[k];
   for (const k of Object.keys(dados)) if (!(k in ordenado)) ordenado[k] = dados[k];

@@ -8,7 +8,7 @@ import satori from 'satori';
 import sharp from 'sharp';
 import { raiosDeSol } from '../../scripts/desenhos/desenhos.mjs';
 import { desconto, reais, type Oferta } from './ofertas';
-import { site } from '../site.config';
+import { site, urlDoSite } from '../site.config';
 
 const L = 1200;
 const A = 630;
@@ -113,7 +113,7 @@ export async function ogOferta(o: Oferta): Promise<Buffer> {
   const encerrada = !o.ativo;
   const tamTitulo = o.titulo.length > 60 ? 42 : o.titulo.length > 38 ? 50 : 58;
   const titulo = o.titulo.length > 90 ? `${o.titulo.slice(0, 88).trimEnd()}…` : o.titulo;
-  const dominio = new URL(site.dominio).host;
+  const dominio = new URL(urlDoSite).host;
 
   const camada = (cor: string, transform: string): No =>
     h('div', {

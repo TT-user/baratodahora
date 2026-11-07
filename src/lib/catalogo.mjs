@@ -19,6 +19,7 @@ export const LOJA = {
 export const CATEGORIAS = /** @type {const} */ ([
   'casa',
   'cozinha',
+  'carro',
   'ferramentas',
   'beleza',
   'tech',
@@ -31,6 +32,7 @@ export const CATEGORIAS = /** @type {const} */ ([
 export const CATEGORIA = {
   casa: { nome: 'Casa', emoji: '🏠' },
   cozinha: { nome: 'Cozinha', emoji: '🍳' },
+  carro: { nome: 'Carro', emoji: '🚗' },
   ferramentas: { nome: 'Ferramentas', emoji: '🔧' },
   beleza: { nome: 'Beleza', emoji: '💄' },
   tech: { nome: 'Tech', emoji: '🎧' },
