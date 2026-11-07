@@ -19,3 +19,6 @@ Thumbs.db
 # intermediários da persona (refeitos por scripts/desenhos/recorta-persona.py)
 marca/persona-recortada.png
 marca/persona-rosto.png
+
+.vercel
+.env*
