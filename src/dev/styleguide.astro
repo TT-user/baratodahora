@@ -16,6 +16,7 @@ import Icone from '../components/Icone.astro';
 import Marquee from '../components/Marquee.astro';
 import CaixaVazia from '../components/CaixaVazia.astro';
 import Logo from '../components/Logo.astro';
+import LogoLoja from '../components/LogoLoja.astro';
 import Recorte from '../components/Recorte.astro';
 import MiniCard from '../components/MiniCard.astro';
 import OfertaItem from '../components/OfertaItem.astro';
@@ -41,9 +42,9 @@ const cores = [
   ['--blue', '#2D6BE4', 'foco, camada'],
   ['--whats', '#25D366', 'WhatsApp, NOVO'],
   ['--mint', '#D5F5DF', 'stat, destaque'],
-  ['--shopee', '#EE4D2D', 'Shopee (ícone)'],
-  ['--shopee-txt', '#D43C1E', 'Shopee (botão)'],
+  ['--shopee', '#EE4D2D', 'Shopee'],
   ['--ml', '#FFE600', 'Mercado Livre'],
+  ['--ml-azul', '#2D3277', 'texto do Mercado Livre'],
   ['--amazon', '#FF9900', 'Amazon'],
 ];
 const lojasDemo = [
@@ -131,9 +132,9 @@ const lojasDemo = [
         <span class="selo">#231</span>
         <span class="off">-55%</span>
         <span class="lojas">
-          <span class="loja-ico loja-ico--shopee">S</span>
-          <span class="loja-ico loja-ico--mercadolivre">ML</span>
-          <span class="loja-ico loja-ico--amazon">a</span>
+          <span class="loja-ico loja-ico--shopee"><LogoLoja loja="shopee" /></span>
+          <span class="loja-ico loja-ico--mercadolivre"><LogoLoja loja="mercadolivre" /></span>
+          <span class="loja-ico loja-ico--amazon"><LogoLoja loja="amazon" /></span>
           <span class="loja-ico loja-ico--magalu">M</span>
           <span class="loja-ico loja-ico--aliexpress">AE</span>
           <span class="loja-ico">↗</span>

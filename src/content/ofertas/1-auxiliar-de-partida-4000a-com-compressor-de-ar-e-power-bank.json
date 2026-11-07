@@ -5,7 +5,8 @@
   "imagem": "/ofertas/1.webp",
   "categoria": "carro",
   "links": [
-    { "loja": "shopee", "url": "https://s.shopee.com.br/9zz7O6bVLv", "tipo": "principal", "rotulo": "Link do produto do vídeo" }
+    { "loja": "shopee", "url": "https://s.shopee.com.br/9zz7O6bVLv", "tipo": "principal", "rotulo": "Link do produto do vídeo" },
+    { "loja": "mercadolivre", "url": "https://meli.la/2dCoy9H", "tipo": "alternativa", "rotulo": "O mesmo produto no Mercado Livre" }
   ],
   "videos": { "tiktok": "", "youtube": "", "instagram": "" },
   "publicadoEm": "2026-11-07T08:56:06-03:00",

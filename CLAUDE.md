@@ -14,7 +14,8 @@ O README explica tudo para humanos; aqui ficam as regras para quem mexe no códi
 - **As regras de uma oferta** moram em `src/lib/oferta-schema.mjs`, usado pelo site e pelo script.
   Mudou uma regra, ela vale para os dois.
 - **Cores e componentes base** em `src/styles/global.css`. Texto branco só sobre `--red-txt`,
-  `--orange-txt`, `--shopee-txt`, `--magalu` ou `--ali` (passam no contraste AA).
+  `--orange-txt`, `--magalu` ou `--ali` (passam no contraste AA); sobre `--shopee` só em texto
+  grande de botão (o `.btn` usa a Archivo Black registrada como 900).
 - **Logo**: `<Logo />` (letras da Anton em SVG, `src/lib/marca.mjs`). Não carregue a Anton como
   fonte da página.
 - **Astro 7** junta texto de elementos vizinhos por padrão; o `compressHTML: true` do config evita

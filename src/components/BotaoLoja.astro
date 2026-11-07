@@ -1,10 +1,15 @@
 ---
-// Botão de loja. Link de afiliado sempre em aba nova, com
-// rel="nofollow sponsored noopener". data-loja e data-oferta servem ao
-// rastreio de cliques (desligado por padrão) e à cópia automática do cupom.
+// Botão de loja: logomarca + nome da loja (laranja SHOPEE, amarelo MERCADO
+// LIVRE...). O nome cresce e encolhe com a largura do botão; se não couber,
+// fica só a logomarca (o leitor de tela continua lendo "Ver na Shopee").
+// Link de afiliado sempre em aba nova, com rel="nofollow sponsored noopener".
+// data-loja e data-oferta servem ao rastreio de cliques (desligado por padrão)
+// e à cópia automática do cupom.
 // Oferta encerrada: vira um bloco cinza sem link (nunca leva a link morto).
 import Icone from './Icone.astro';
-import { naLoja, textoBotaoLoja, type LinkLoja } from '../lib/ofertas';
+import LogoLoja from './LogoLoja.astro';
+import { LOJA } from '../lib/catalogo.mjs';
+import { naLoja, type LinkLoja } from '../lib/ofertas';
 
 interface Props {
   link: LinkLoja;
@@ -16,6 +21,8 @@ interface Props {
   id?: string;
 }
 const { link, numero, local, pequeno = false, nudge = false, encerrada = false, id } = Astro.props;
+const outra = link.loja === 'outra';
+const { nome, prep } = LOJA[link.loja];
 ---
 
 {
@@ -25,7 +32,7 @@ const { link, numero, local, pequeno = false, nudge = false, encerrada = false, 
     </span>
   ) : (
     <a
-      class:list={['btn', `btn--${link.loja}`, { 'btn--sm': pequeno, 'btn--nudge': nudge }]}
+      class:list={['btn', 'btn--loja', `btn--${link.loja}`, { 'btn--sm': pequeno, 'btn--nudge': nudge }]}
       href={link.url}
       target="_blank"
       rel="nofollow sponsored noopener"
@@ -34,8 +41,18 @@ const { link, numero, local, pequeno = false, nudge = false, encerrada = false, 
       data-local={local}
       id={id}
     >
-      <span>{textoBotaoLoja(link.loja)}</span>
-      <Icone nome="seta" />
+      <LogoLoja loja={link.loja} class="btn__logo" />
+      <span class="btn__nome">
+        {outra ? (
+          'Ver na loja'
+        ) : (
+          <>
+            <span class="sr">Ver {prep} </span>
+            {nome}
+          </>
+        )}
+      </span>
+      <Icone nome="seta" class="btn__seta" />
       <span class="sr"> (abre em outra aba)</span>
     </a>
   )

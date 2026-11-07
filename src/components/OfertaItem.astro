@@ -3,6 +3,7 @@
 // clona para "Ver mais" e para os resultados da busca (mesma marcação, mesmo
 // estilo). Os campos que o script preenche têm data-f.
 import Icone from './Icone.astro';
+import LogoLoja from './LogoLoja.astro';
 import { LOJA, LOJAS } from '../lib/catalogo.mjs';
 import { desconto, ehNova, fotos, lojasDaOferta, reais, urlOferta, type Oferta } from '../lib/ofertas';
 
@@ -48,7 +49,7 @@ const nova = !!o && o.ativo && ehNova(o);
       {
         LOJAS.map((l) => (
           <span class={`loja-ico loja-ico--${l}`} data-loja-ico={l} hidden={!lojas.includes(l)}>
-            {LOJA[l].marca}
+            {['shopee', 'mercadolivre', 'amazon'].includes(l) ? <LogoLoja loja={l} /> : LOJA[l].marca}
           </span>
         ))
       }

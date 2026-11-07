@@ -41,6 +41,17 @@
   line-gap-override: 0%;
 }
 
+/* A Archivo Black é um desenho "black": registrada também como 900, o mesmo
+   arquivo serve aos botões com o peso que ela de fato tem (o navegador não
+   engrossa nada; é só o rótulo certo para quem mede contraste). */
+@font-face {
+  font-family: 'Archivo Black';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 900;
+  src: url('../../node_modules/@fontsource/archivo-black/files/archivo-black-latin-400-normal.woff2') format('woff2');
+}
+
 :root {
   --bg: #fbf6ec; /* creme do fundo */
   --paper: #ffffff;
@@ -53,8 +64,9 @@
   --whats: #25d366; /* botão verde */
   --mint: #d5f5df;
   /* lojas */
-  --shopee: #ee4d2d;
-  --ml: #ffe600;
+  --shopee: #ee4d2d; /* laranja da Shopee */
+  --ml: #ffe600; /* amarelo do Mercado Livre */
+  --ml-azul: #2d3277;
   --amazon: #ff9900;
   --magalu: #0070e0;
   --ali: #d92b04;
@@ -63,7 +75,6 @@
      em texto pequeno, 3:1 no título). O vermelho do banner já passa (5:1). */
   --red-txt: #d62828;
   --orange-txt: #f25f0f;
-  --shopee-txt: #d43c1e;
 
   --display: 'Archivo Black', 'Archivo Black Reserva', 'Archivo Black Reserva R', system-ui, sans-serif;
   --sans: 'DM Sans', 'DM Sans Reserva', 'DM Sans Reserva R', system-ui, -apple-system, sans-serif;
@@ -266,7 +277,7 @@ a.brick:active,
   box-shadow: 0 8px 0 0 var(--ink);
   background: var(--paper);
   color: var(--ink);
-  font: 400 17px/1.15 var(--display);
+  font: 900 17px/1.15 var(--display);
   letter-spacing: 0.03em;
   text-align: center;
   text-decoration: none;
@@ -319,12 +330,13 @@ a.brick:active,
   animation: nudge 4s ease-in-out infinite;
 }
 .btn--shopee {
-  background: var(--shopee-txt);
+  background: var(--shopee);
   color: #fff;
 }
 .btn--ml,
 .btn--mercadolivre {
   background: var(--ml);
+  color: var(--ml-azul);
 }
 .btn--amazon {
   background: var(--amazon);
@@ -351,6 +363,62 @@ a.brick:active,
   background: var(--ink);
   color: #fff;
   box-shadow: 0 8px 0 0 var(--gold);
+}
+/* botão de loja: logomarca + nome da loja. O nome acompanha a largura do
+   botão (cqi) e, se não couber, sai e fica só a logomarca. */
+.btn--loja {
+  container-type: inline-size;
+  gap: 12px;
+}
+.btn--loja .btn__logo {
+  flex: none;
+  width: auto;
+  height: 1.55em;
+}
+.btn--mercadolivre .btn__logo {
+  height: 1.45em;
+}
+.btn__nome {
+  font-size: clamp(15px, 8.6cqi, 25px);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.btn--mercadolivre .btn__nome,
+.btn--aliexpress .btn__nome {
+  font-size: clamp(14px, 6.6cqi, 23px);
+  letter-spacing: 0.02em;
+}
+.btn--loja .btn__seta {
+  width: 1.05em;
+  height: 1.05em;
+}
+/* nome longo (Mercado Livre, AliExpress) sai antes; nome curto aguenta mais */
+@container (max-width: 205px) {
+  .btn--mercadolivre .btn__nome,
+  .btn--aliexpress .btn__nome {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .btn--mercadolivre .btn__logo {
+    height: 2.2em;
+  }
+}
+@container (max-width: 135px) {
+  .btn--loja .btn__nome {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .btn--loja .btn__logo {
+    height: 2.2em;
+  }
 }
 .btn--off {
   background: #e7e2d8;
@@ -473,15 +541,19 @@ a.brick:active,
   place-items: center;
   min-width: 25px;
   height: 25px;
-  padding: 0 5px;
+  padding: 0 4px;
   border: 2px solid var(--ink);
   border-radius: 7px;
   background: var(--paper);
   font: 400 11.5px/1 var(--display);
   letter-spacing: 0;
 }
+.loja-ico .logo-loja {
+  width: auto;
+  height: 16px;
+}
 .loja-ico--shopee {
-  background: var(--shopee-txt);
+  background: var(--shopee);
   color: #fff;
 }
 .loja-ico--mercadolivre {
@@ -489,6 +561,7 @@ a.brick:active,
 }
 .loja-ico--amazon {
   background: var(--amazon);
+  color: var(--ink);
 }
 .loja-ico--magalu {
   background: var(--magalu);
