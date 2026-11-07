@@ -127,7 +127,7 @@ function card(o: Item): HTMLLIElement {
     f('por-v').textContent = reais(o.por);
     f('de').hidden = !o.de;
     f('de-v').textContent = o.de ? reais(o.de) : '';
-    const pct = o.de && o.de > o.por ? Math.round((1 - o.por / o.de) * 100) : 0;
+    const pct = o.de && o.de > o.por ? Math.floor((1 - o.por / o.de) * 100 + 1e-9) : 0;
     f('off').hidden = !pct;
     f('off').textContent = `-${pct}%`;
   }

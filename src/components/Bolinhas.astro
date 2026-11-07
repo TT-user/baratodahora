@@ -58,11 +58,13 @@ const itens: Item[] = [
 
 // cada palavra na Anton, com altura limitada pela largura do círculo
 function titulo(linhas: string[]) {
-  const alturaMax = linhas.length > 1 ? 12 : 15;
+  // duas linhas: menores e mais estreitas, para caber na curva do círculo
+  const alturaMax = linhas.length > 1 ? 10.5 : 15;
+  const larguraMax = linhas.length > 1 ? 44 : 50;
   return linhas
     .map((t) => {
       const { largura, altura } = caminho(t);
-      const h = Math.min(alturaMax, (50 / largura) * altura);
+      const h = Math.min(alturaMax, (larguraMax / largura) * altura);
       return `<span style="height:${Math.round(h * 10) / 10}px">${letreiro(t)}</span>`;
     })
     .join('');
@@ -203,6 +205,10 @@ function titulo(linhas: string[]) {
   .bolinha__disco--verm .bolinha__icone,
   .bolinha__disco--preto .bolinha__icone {
     color: var(--gold);
+  }
+  .bolinha__disco--preto .bolinha__icone {
+    width: 18px;
+    height: 18px;
   }
   .bolinha__icone--ate50 {
     color: var(--red);

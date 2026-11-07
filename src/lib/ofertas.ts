@@ -69,10 +69,14 @@ export const nomeLoja = (loja: Loja) => LOJA[loja].nome;
 
 /* ---------- preço ---------- */
 
-/** % de desconto calculado (nunca digitado). 0 quando não há preço "de". */
+/**
+ * % de desconto calculado (nunca digitado). 0 quando não há preço "de".
+ * Arredonda para baixo, como as lojas: 119 → 71,59 é 39%, não 40%. O site
+ * nunca anuncia mais desconto do que o real.
+ */
 export function desconto(o: Pick<Oferta, 'precoDe' | 'precoPor'>): number {
   if (!o.precoDe || !o.precoPor || o.precoDe <= o.precoPor) return 0;
-  return Math.round((1 - o.precoPor / o.precoDe) * 100);
+  return Math.floor((1 - o.precoPor / o.precoDe) * 100 + 1e-9);
 }
 
 /** 89.9 → "R$ 89,90"; 90 → "R$ 90". Espaço não separável depois do R$. */
