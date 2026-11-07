@@ -1,0 +1,42 @@
+---
+// Botão de loja. Link de afiliado sempre em aba nova, com
+// rel="nofollow sponsored noopener". data-loja e data-oferta servem ao
+// rastreio de cliques (desligado por padrão) e à cópia automática do cupom.
+// Oferta encerrada: vira um bloco cinza sem link (nunca leva a link morto).
+import Icone from './Icone.astro';
+import { naLoja, textoBotaoLoja, type LinkLoja } from '../lib/ofertas';
+
+interface Props {
+  link: LinkLoja;
+  numero: number;
+  local: string;
+  pequeno?: boolean;
+  nudge?: boolean;
+  encerrada?: boolean;
+  id?: string;
+}
+const { link, numero, local, pequeno = false, nudge = false, encerrada = false, id } = Astro.props;
+---
+
+{
+  encerrada ? (
+    <span class:list={['btn', 'btn--off', { 'btn--sm': pequeno }]} id={id}>
+      Encerrada {naLoja(link.loja)}
+    </span>
+  ) : (
+    <a
+      class:list={['btn', `btn--${link.loja}`, { 'btn--sm': pequeno, 'btn--nudge': nudge }]}
+      href={link.url}
+      target="_blank"
+      rel="nofollow sponsored noopener"
+      data-loja={link.loja}
+      data-oferta={numero}
+      data-local={local}
+      id={id}
+    >
+      <span>{textoBotaoLoja(link.loja)}</span>
+      <Icone nome="seta" />
+      <span class="sr"> (abre em outra aba)</span>
+    </a>
+  )
+}

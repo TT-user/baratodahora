@@ -1,0 +1,120 @@
+---
+import Base from '../layouts/Base.astro';
+import FaixaTopo from '../components/FaixaTopo.astro';
+import Icone from '../components/Icone.astro';
+import Rodape from '../components/Rodape.astro';
+import { site } from '../site.config';
+
+const atualizada = '07/11/2026';
+const medindo = site.rastreio.ativo;
+---
+
+<Base
+  titulo={`Privacidade | ${site.nome}`}
+  descricao={`Como o ${site.nome} trata seus dados: o site não pede cadastro e não guarda dados pessoais.`}
+  caminho="/privacidade"
+  classe="pg-texto"
+>
+  <FaixaTopo />
+  <main id="conteudo" class="wrap texto">
+    <a class="voltar" href="/"><Icone nome="seta-esq" /> Todas as ofertas</a>
+    <p class="eyebrow">Política de privacidade</p>
+    <h1>Seus dados, em português claro</h1>
+    <p class="muted">Atualizada em {atualizada}.</p>
+
+    <section class="brick bloco">
+      <h2>O que este site coleta</h2>
+      <p>
+        Nada que identifique você. O {site.nome} não tem cadastro, login, formulário nem comentário. A busca de ofertas
+        acontece no seu próprio aparelho: o que você digita não é enviado para nós.
+      </p>
+      {
+        medindo ? (
+          <p>
+            Contamos os cliques nos botões das lojas (qual loja, qual oferta) para saber quais achadinhos interessam
+            mais. Essa contagem não usa cookies e não guarda seu nome, e-mail, telefone nem endereço IP completo.
+          </p>
+        ) : (
+          <p>Este site não usa cookies nem ferramentas de medição de visitas.</p>
+        )
+      }
+    </section>
+
+    <section class="brick bloco">
+      <h2>Quando você clica numa loja</h2>
+      <p>
+        Os botões levam para a Shopee, o Mercado Livre, a Amazon ou outra loja. Muitos são links de afiliado: a loja
+        registra que você veio daqui e, se você comprar, me paga uma comissão. Para isso a própria loja pode gravar
+        cookies no seu navegador, seguindo a política de privacidade dela.
+      </p>
+      <p>A compra, o pagamento e a entrega acontecem inteiramente na loja. Nós nunca vemos seus dados de compra.</p>
+    </section>
+
+    <section class="brick bloco">
+      <h2>Hospedagem</h2>
+      <p>
+        O site é hospedado pela Vercel, que registra dados técnicos de acesso (como endereço IP e navegador) para
+        manter o serviço funcionando e seguro, por prazo limitado.
+      </p>
+    </section>
+
+    <section class="brick bloco">
+      <h2>Seus direitos (LGPD)</h2>
+      <p>
+        Você pode pedir informações sobre qualquer dado relacionado a você
+        {
+          site.contato ? (
+            <>
+              pelo e-mail <a href={`mailto:${site.contato}`}>{site.contato}</a>.
+            </>
+          ) : (
+            <>pelas mensagens das nossas redes sociais.</>
+          )
+        }
+      </p>
+    </section>
+  </main>
+  <Rodape />
+</Base>
+
+<style>
+  .texto {
+    display: grid;
+    gap: 18px;
+    padding-top: 22px;
+    padding-bottom: 48px;
+  }
+  .voltar {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 6px 12px 6px 8px;
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    border-radius: 12px;
+    box-shadow: 0 3px 0 0 var(--ink);
+    font: 700 14px/1 var(--sans);
+    text-decoration: none;
+  }
+  .voltar :global(.ico) {
+    width: 18px;
+    height: 18px;
+  }
+  .eyebrow {
+    margin-top: 10px;
+    color: var(--red-txt);
+  }
+  .bloco {
+    display: grid;
+    gap: 10px;
+    padding: 18px 18px 20px;
+  }
+  .bloco h2 {
+    font-size: 20px;
+  }
+  .bloco a {
+    font-weight: 700;
+  }
+</style>

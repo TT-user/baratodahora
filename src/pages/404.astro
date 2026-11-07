@@ -1,0 +1,143 @@
+---
+import Base from '../layouts/Base.astro';
+import Deco from '../components/Deco.astro';
+import FaixaTopo from '../components/FaixaTopo.astro';
+import Icone from '../components/Icone.astro';
+import CaixaVazia from '../components/CaixaVazia.astro';
+import Rodape from '../components/Rodape.astro';
+import { site } from '../site.config';
+---
+
+<Base
+  titulo={`Página não encontrada | ${site.nome}`}
+  descricao="Essa página passou da hora. Busque a oferta pelo número do vídeo."
+  caminho="/404"
+  semIndice
+  classe="pg-erro"
+>
+  <FaixaTopo />
+  <div class="erro">
+    <Deco variante="erro" />
+    <main id="conteudo" class="wrap erro__in">
+      <div class="erro__arte">
+        <CaixaVazia />
+        <span class="erro__balao" aria-hidden="true">?</span>
+        <span class="tag tag--ouro erro__tag">404</span>
+      </div>
+      <p class="eyebrow">Ops</p>
+      <h1>Essa página <span class="pill">passou</span> da hora.</h1>
+      <p class="erro__msg" id="erro-msg">
+        Se você veio de um vídeo, digita o número da oferta aqui embaixo.
+      </p>
+
+      <form class="erro__busca" action="/" method="get" role="search">
+        <label class="sr" for="busca">Número do vídeo ou nome do produto</label>
+        <div class="erro__caixa">
+          <Icone nome="lupa" />
+          <input
+            id="busca"
+            name="q"
+            type="search"
+            placeholder="Nº do vídeo ou nome do produto"
+            autocomplete="off"
+            enterkeyhint="search"
+          />
+        </div>
+        <button class="btn btn--gold" type="submit">Buscar oferta</button>
+      </form>
+
+      <a class="btn btn--paper erro__home" href="/">
+        <Icone nome="seta-esq" /> Ver todas as ofertas
+      </a>
+    </main>
+  </div>
+  <Rodape />
+</Base>
+
+<script>
+  import '../scripts/erro';
+</script>
+
+<style>
+  .erro {
+    position: relative;
+    overflow: clip;
+  }
+  .erro__in {
+    z-index: 1;
+    padding-top: 24px;
+    padding-bottom: 48px;
+    text-align: center;
+  }
+  .erro__arte {
+    position: relative;
+    width: min(270px, 74vw);
+    margin: 10px auto 18px;
+  }
+  .erro__balao {
+    position: absolute;
+    top: -8%;
+    left: 44%;
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    border-radius: 50% 50% 50% 8px;
+    box-shadow: 0 4px 0 0 var(--ink);
+    font: 400 30px/1 var(--display);
+    color: var(--red-txt);
+    rotate: 10deg;
+    animation: wob 2.2s ease-in-out infinite;
+  }
+  .erro__tag {
+    position: absolute;
+    left: -6%;
+    bottom: 10%;
+    font-size: 22px;
+    rotate: -10deg;
+  }
+  h1 {
+    margin-top: 8px;
+  }
+  .erro__msg {
+    max-width: 340px;
+    margin: 14px auto 22px;
+    color: var(--muted);
+    font-size: 16.5px;
+  }
+  .erro__busca {
+    display: grid;
+    gap: 16px;
+  }
+  .erro__caixa {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    border-radius: 16px;
+    box-shadow: 0 7px 0 0 var(--ink);
+  }
+  .erro__caixa :global(.ico) {
+    width: 22px;
+    height: 22px;
+  }
+  .erro__caixa input {
+    width: 100%;
+    min-width: 0;
+    height: 58px;
+    border: 0;
+    background: transparent;
+    font: 500 17px/1 var(--sans);
+    outline: none;
+  }
+  .erro__caixa:focus-within {
+    box-shadow: 0 7px 0 0 var(--ink), 0 0 0 4px var(--gold);
+  }
+  .erro__home {
+    margin-top: 26px;
+  }
+</style>

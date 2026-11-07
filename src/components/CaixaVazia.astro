@@ -1,0 +1,74 @@
+---
+// Ilustração do 404: caixa de encomenda aberta e vazia, com as abas
+// balançando e a etiqueta de % pendurada.
+import { caixaVazia } from '../../scripts/desenhos/desenhos.mjs';
+import { caminho } from '../lib/marca.mjs';
+
+const svg = caixaVazia(caminho).replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
+---
+
+<div class="cv" data-anima set:html={svg}></div>
+
+<style>
+  .cv :global(svg) {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .cv :global(.cv-caixa),
+  .cv :global([class^='cv-aba']),
+  .cv :global(.cv-etiqueta) {
+    transform-box: fill-box;
+  }
+  .cv :global(.cv-caixa) {
+    transform-origin: 50% 100%;
+    animation: cv-pula 3.6s ease-in-out infinite;
+  }
+  .cv :global(.cv-aba-esq) {
+    transform-origin: 100% 100%;
+    animation: cv-aba 2.6s ease-in-out infinite;
+  }
+  .cv :global(.cv-aba-dir) {
+    transform-origin: 0% 50%;
+    animation: cv-aba 2.6s ease-in-out infinite reverse;
+  }
+  .cv :global(.cv-aba-tras) {
+    transform-origin: 50% 100%;
+    animation: cv-aba 3.1s ease-in-out infinite;
+  }
+  .cv :global(.cv-etiqueta) {
+    transform-origin: 30% 0%;
+    animation: cv-balanca 2.2s ease-in-out infinite;
+  }
+  @keyframes cv-pula {
+    0%,
+    70%,
+    100% {
+      transform: none;
+    }
+    78% {
+      transform: translateY(-10px) scaleY(1.02);
+    }
+    86% {
+      transform: translateY(0) scaleY(0.98);
+    }
+  }
+  @keyframes cv-aba {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(-7deg);
+    }
+  }
+  @keyframes cv-balanca {
+    0%,
+    100% {
+      transform: rotate(-6deg);
+    }
+    50% {
+      transform: rotate(8deg);
+    }
+  }
+</style>

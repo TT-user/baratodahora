@@ -1,0 +1,18 @@
+{
+  "numero": 229,
+  "slug": "parafusadeira-e-furadeira-12v-com-maleta",
+  "titulo": "Parafusadeira e Furadeira 12V com Maleta",
+  "imagem": "/ofertas/229.webp",
+  "categoria": "ferramentas",
+  "precoDe": 259.9,
+  "precoPor": 149.9,
+  "precoVistoEm": "2026-11-05",
+  "links": [
+    { "loja": "mercadolivre", "url": "https://lista.mercadolivre.com.br/parafusadeira-12v-maleta", "tipo": "principal", "rotulo": "Link do produto do vídeo" },
+    { "loja": "shopee", "url": "https://shopee.com.br/search?keyword=parafusadeira%2012v", "tipo": "alternativa", "rotulo": "Achei mais barato na Shopee" }
+  ],
+  "videos": { "tiktok": "", "youtube": "", "instagram": "" },
+  "publicadoEm": "2026-11-05T12:00:00-03:00",
+  "ativo": true,
+  "destaque": false
+}

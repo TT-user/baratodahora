@@ -1,0 +1,206 @@
+---
+import Base from '../layouts/Base.astro';
+import Busca from '../components/Busca.astro';
+import Chips from '../components/Chips.astro';
+import Deco from '../components/Deco.astro';
+import Destaque from '../components/Destaque.astro';
+import FaixaTopo from '../components/FaixaTopo.astro';
+import Faq from '../components/Faq.astro';
+import FrameStack from '../components/FrameStack.astro';
+import Grupo from '../components/Grupo.astro';
+import Icone from '../components/Icone.astro';
+import Marquee from '../components/Marquee.astro';
+import OfertaItem from '../components/OfertaItem.astro';
+import Redes from '../components/Redes.astro';
+import Recorte from '../components/Recorte.astro';
+import Stats from '../components/Stats.astro';
+import Sticky from '../components/Sticky.astro';
+import Rodape from '../components/Rodape.astro';
+import { categoriasComOferta, todasAsOfertas } from '../lib/ofertas';
+import { site } from '../site.config';
+
+const POR_VEZ = 30;
+const todas = await todasAsOfertas();
+const ativas = todas.filter((o) => o.ativo);
+const primeiras = ativas.slice(0, POR_VEZ);
+const destaque = ativas.find((o) => o.destaque);
+const maisNova = ativas[0];
+const palavraExemplo = maisNova?.titulo
+  .split(/\s+/)
+  .find((p) => p.length >= 5)
+  ?.toLowerCase();
+const maiorNumero = todas[0]?.numero ?? 0;
+
+const titulo = `${site.nome} · Achadinhos dos vídeos num lugar só`;
+const descricao = `Viu a oferta no vídeo? Busque pelo número e vá direto para o link da Shopee, do Mercado Livre ou da Amazon. ${site.slogan}`;
+---
+
+<Base titulo={titulo} descricao={descricao} caminho="/" classe="pg-home">
+  <a class="pular" href="#busca">Pular para a busca</a>
+  <FaixaTopo />
+
+  <header class="hero">
+    <Deco />
+    <div class="wrap hero__in">
+      <FrameStack />
+      <h1>
+        Os achadinhos dos vídeos, <span class="pill">baratos</span> e num lugar só.
+      </h1>
+      <p class="hero__sub">Viu no vídeo? Digite o número da oferta e caia direto no link da loja.</p>
+      <Redes />
+      <Busca exemploNumero={maisNova?.numero} exemploPalavra={palavraExemplo} />
+    </div>
+  </header>
+
+  <Marquee />
+
+  <main id="conteudo" class="wrap">
+    <section class="filtros" aria-label="Categorias">
+      <Chips categorias={categoriasComOferta(ativas)} total={ativas.length} />
+    </section>
+
+    {destaque && <Destaque oferta={destaque} />}
+
+    <section class="ofertas" aria-labelledby="lista-titulo">
+      <div class="ofertas__topo">
+        <div>
+          <p class="eyebrow">Do vídeo mais novo pro mais antigo</p>
+          <h2 id="lista-titulo">Ofertas dos vídeos</h2>
+        </div>
+        <p class="ofertas__status" id="busca-status" aria-live="polite"></p>
+      </div>
+
+      <ol class="lista" id="lista">
+        {
+          primeiras.map((o) => (
+            <li>
+              <OfertaItem oferta={o} />
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="vazio brick" id="vazio" hidden>
+        <p class="vazio__titulo">Não achei 😕 Confere o número no vídeo</p>
+        <p class="muted">O número aparece no começo de cada vídeo, tipo “Oferta {maisNova?.numero ?? 231}”.</p>
+        <button type="button" class="btn btn--sm btn--paper" data-limpar-tudo>Ver todas as ofertas</button>
+      </div>
+
+      <button type="button" class="btn btn--paper ver-mais" id="ver-mais" hidden={ativas.length <= POR_VEZ}>
+        Ver mais ofertas
+        <Icone nome="seta" class="ver-mais__seta" />
+      </button>
+
+      <template id="tpl-item">
+        <li><OfertaItem /></li>
+      </template>
+    </section>
+
+    {maiorNumero > 0 && <Stats postadas={maiorNumero} />}
+  </main>
+
+  <Grupo />
+
+  <div class="wrap">
+    <Recorte />
+    <Faq />
+  </div>
+
+  <Rodape />
+
+  <Sticky alvo="#busca-form">
+    <button type="button" class="btn btn--gold" data-ir-busca>
+      <Icone nome="lupa" /> Buscar pelo número
+    </button>
+  </Sticky>
+</Base>
+
+<script>
+  import '../scripts/home';
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: clip;
+    padding-bottom: 36px;
+  }
+  .hero__in {
+    z-index: 1;
+    text-align: center;
+  }
+  .hero h1 {
+    margin-top: 12px;
+  }
+  /* celular baixo (iPhone SE): a busca precisa caber na primeira tela */
+  @media (max-height: 740px) and (max-width: 600px) {
+    .hero h1 {
+      margin-top: 6px;
+      font-size: 27px;
+    }
+    .hero__sub {
+      margin: 8px auto 14px;
+      font-size: 15.5px;
+    }
+    .hero :global(.busca) {
+      margin-top: 16px;
+    }
+  }
+  .hero__sub {
+    max-width: 330px;
+    margin: 12px auto 20px;
+    color: var(--muted);
+    font-size: 16.5px;
+  }
+  .filtros {
+    padding-top: 28px;
+  }
+  .ofertas {
+    padding-top: 40px;
+  }
+  .ofertas__topo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 6px 12px;
+    margin-bottom: 22px;
+  }
+  .ofertas__topo .eyebrow {
+    margin-bottom: 6px;
+    color: var(--red-txt);
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+  }
+  .ofertas__status {
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .ofertas__status:empty {
+    display: none;
+  }
+  .lista {
+    display: grid;
+    gap: 22px;
+  }
+  .vazio {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    padding: 26px 20px 24px;
+    text-align: center;
+  }
+  .vazio__titulo {
+    font: 400 19px/1.2 var(--display);
+  }
+  .vazio .btn {
+    margin-top: 6px;
+  }
+  .ver-mais {
+    margin-top: 30px;
+  }
+  .ver-mais :global(.ver-mais__seta) {
+    rotate: 90deg;
+  }
+</style>

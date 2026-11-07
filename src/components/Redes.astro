@@ -1,0 +1,92 @@
+---
+import Icone from './Icone.astro';
+import { site } from '../site.config';
+
+interface Props {
+  tamanho?: 'normal' | 'pequeno';
+}
+const { tamanho = 'normal' } = Astro.props;
+
+const redes = [
+  { id: 'youtube', nome: 'YouTube', url: site.redes.youtube },
+  { id: 'tiktok', nome: 'TikTok', url: site.redes.tiktok },
+  { id: 'instagram', nome: 'Instagram', url: site.redes.instagram },
+] as const;
+---
+
+<ul class:list={['redes', `redes--${tamanho}`]}>
+  {
+    redes
+      .filter((r) => r.url)
+      .map((r) => (
+        <li>
+          <a class={`rede rede--${r.id}`} href={r.url} target="_blank" rel="noopener me">
+            <Icone nome={r.id} />
+            <span class="sr">
+              {r.nome} do {site.nome}
+            </span>
+          </a>
+        </li>
+      ))
+  }
+</ul>
+
+<style>
+  .redes {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+  .rede {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    box-shadow: 0 5px 0 0 var(--ink);
+    color: #fff;
+    transition:
+      transform 0.12s ease,
+      box-shadow 0.12s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .rede :global(.ico) {
+    width: 24px;
+    height: 24px;
+  }
+  @media (hover: hover) {
+    .rede:hover {
+      transform: translateY(2px) rotate(-3deg);
+      box-shadow: 0 3px 0 0 var(--ink);
+    }
+  }
+  .rede:active {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 0 var(--ink);
+  }
+  .rede--youtube {
+    background: #e01f1f;
+  }
+  .rede--tiktok {
+    background: var(--ink);
+    box-shadow: 0 5px 0 0 var(--ink);
+  }
+  .rede--tiktok :global(.ico) {
+    filter: drop-shadow(-1.5px -1px 0 #25f4ee) drop-shadow(1.5px 1px 0 #fe2c55);
+  }
+  .rede--instagram {
+    background: radial-gradient(circle at 28% 105%, #ffd25a 0 18%, #ff6a3d 38%, #e1306c 60%, #8a3ab9 100%);
+  }
+  .redes--pequeno .rede {
+    width: 44px;
+    height: 44px;
+    border-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 0 0 var(--gold);
+  }
+  .redes--pequeno .rede :global(.ico) {
+    width: 20px;
+    height: 20px;
+  }
+</style>

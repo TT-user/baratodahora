@@ -1,0 +1,40 @@
+---
+import Icone from './Icone.astro';
+interface Props {
+  texto?: string;
+}
+const { texto = 'Ofertas que acabam rápido' } = Astro.props;
+---
+
+<p class="faixa" data-anima>
+  <Icone nome="raio" class="faixa__raio" />
+  <span>{texto}</span>
+  <Icone nome="raio" class="faixa__raio faixa__raio--2" />
+</p>
+
+<style>
+  .faixa {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 10px 16px 9px;
+    background: var(--red-txt);
+    color: #fff;
+    border-bottom: 3px solid var(--ink);
+    font: 400 12.5px/1.1 var(--display);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .faixa :global(.faixa__raio) {
+    width: 15px;
+    height: 15px;
+    color: var(--gold);
+    filter: drop-shadow(0 1.5px 0 var(--ink));
+    animation: pisca 2.6s steps(1, end) infinite;
+  }
+  .faixa :global(.faixa__raio--2) {
+    animation-delay: -1.3s;
+    scale: -1 1;
+  }
+</style>

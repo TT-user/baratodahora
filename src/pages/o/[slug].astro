@@ -1,0 +1,515 @@
+---
+import Base from '../../layouts/Base.astro';
+import BotaoLoja from '../../components/BotaoLoja.astro';
+import Cupom from '../../components/Cupom.astro';
+import Deco from '../../components/Deco.astro';
+import FaixaTopo from '../../components/FaixaTopo.astro';
+import Icone from '../../components/Icone.astro';
+import MiniCard from '../../components/MiniCard.astro';
+import Preco from '../../components/Preco.astro';
+import Recorte from '../../components/Recorte.astro';
+import Rodape from '../../components/Rodape.astro';
+import Sticky from '../../components/Sticky.astro';
+import {
+  desconto,
+  ehNova,
+  fotos,
+  linkPrincipal,
+  linksAlternativos,
+  naLoja,
+  reais,
+  relacionadas,
+  todasAsOfertas,
+  urlOferta,
+  type Oferta,
+} from '../../lib/ofertas';
+import { site } from '../../site.config';
+
+export async function getStaticPaths() {
+  const todas = await todasAsOfertas();
+  return todas.map((oferta) => ({
+    params: { slug: oferta.slug },
+    props: { oferta, rel: relacionadas(oferta, todas) },
+  }));
+}
+
+interface Props {
+  oferta: Oferta;
+  rel: Oferta[];
+}
+const { oferta: o, rel } = Astro.props;
+
+const principal = linkPrincipal(o);
+const alts = linksAlternativos(o);
+const pct = desconto(o);
+const encerrada = !o.ativo;
+const nova = !encerrada && ehNova(o);
+const videos = (
+  [
+    ['tiktok', 'TikTok', o.videos.tiktok],
+    ['youtube', 'YouTube', o.videos.youtube],
+    ['instagram', 'Instagram', o.videos.instagram],
+  ] as const
+).filter(([, , url]) => !!url);
+
+const tituloPagina = `Oferta #${o.numero} – ${o.titulo} | ${site.nome}`;
+const lojasTexto = [principal, ...alts].map((l) => naLoja(l.loja));
+const lojasFrase = lojasTexto.length > 1 ? `${lojasTexto.slice(0, -1).join(', ')} e ${lojasTexto.at(-1)}` : lojasTexto[0];
+const descricao = encerrada
+  ? `A oferta #${o.numero} (${o.titulo}) acabou. Veja as ofertas do ${site.nome} que ainda estão valendo.`
+  : [
+      o.precoPor && o.precoDe ? `De ${reais(o.precoDe)} por ${reais(o.precoPor)} (-${pct}%).` : '',
+      o.precoPor && !o.precoDe ? `Por ${reais(o.precoPor)}.` : '',
+      o.cupom ? `Com cupom ${o.cupom}.` : '',
+      `Link direto ${lojasFrase}.`,
+    ]
+      .filter(Boolean)
+      .join(' ');
+const urlAbsoluta = new URL(urlOferta(o), site.dominio).href;
+const textoCompartilhar = o.precoPor
+  ? `Olha esse achadinho: ${o.titulo} por ${reais(o.precoPor)}`
+  : `Olha esse achadinho: ${o.titulo}`;
+---
+
+<Base
+  titulo={tituloPagina}
+  descricao={descricao}
+  caminho={urlOferta(o)}
+  og={{ imagem: `/og/${o.numero}.jpg`, largura: 1200, altura: 630, tipo: 'image/jpeg', alt: o.titulo }}
+  ogTipo="product"
+  semIndice={encerrada}
+  classe="pg-oferta"
+>
+  <FaixaTopo texto={encerrada ? 'Essa acabou, mas tem mais' : 'Oferta que acaba rápido'} />
+
+  <div class="pagina">
+    <Deco variante="oferta" />
+    <div class="wrap pagina__in">
+      <a class="voltar" href="/">
+        <Icone nome="seta-esq" /> Todas as ofertas
+      </a>
+
+      <div class="quem">
+        <img class="quem__avatar" src={site.rosto} alt="" width="64" height="64" decoding="async" />
+        <p class="quem__balao">
+          {encerrada ? 'Essa acabou, mas olha as que tão valendo 👇' : 'Esse eu testei no vídeo 👇'}
+        </p>
+      </div>
+
+      <main id="conteudo" data-cupom={encerrada ? undefined : o.cupom}>
+        <article class:list={['oferta', 'brick', { 'oferta--fim': encerrada }]}>
+          <p class="eyebrow oferta__eyebrow">Oferta #{o.numero}</p>
+          <h1 class="oferta__titulo">{o.titulo}</h1>
+
+          <figure class="oferta__foto">
+            <img
+              src={o.imagem}
+              alt={o.titulo}
+              width="800"
+              height="800"
+              fetchpriority="high"
+              decoding="async"
+              sizes="(max-width: 460px) calc(100vw - 76px), 384px"
+              srcset={`${fotos(o).m} 400w, ${fotos(o).g} 600w, ${o.imagem} 800w`}
+            />
+            {pct > 0 && !encerrada && <span class="tag tag--verm oferta__off">-{pct}%</span>}
+            {nova && <span class="tag tag--verde tag--esq oferta__novo">Novo</span>}
+            {encerrada && <span class="tag oferta__acabou">Essa acabou 😢</span>}
+          </figure>
+
+          {!encerrada && <Preco precoDe={o.precoDe} precoPor={o.precoPor} vistoEm={o.precoVistoEm ?? o.publicadoEm} grande />}
+
+          {o.nota && <p class="oferta__nota">{o.nota}</p>}
+
+          {!encerrada && o.cupom && <Cupom codigo={o.cupom} />}
+
+          <div class="oferta__principal">
+            <p class="rotulo">
+              {encerrada ? 'O link saiu daqui para você não cair em página vazia.' : (principal.rotulo ?? 'Link do produto do vídeo')}
+            </p>
+            <BotaoLoja link={principal} numero={o.numero} local="principal" nudge encerrada={encerrada} id="btn-principal" />
+          </div>
+
+          {
+            alts.length > 0 && !encerrada && (
+              <div class="oferta__alts">
+                <p class="divisor">
+                  <span>🔎 Também encontrei:</span>
+                </p>
+                {alts.map((a) => (
+                  <div class="alt">
+                    <p class="rotulo">{a.rotulo ?? `Opção ${naLoja(a.loja)}`}</p>
+                    <BotaoLoja link={a} numero={o.numero} local="alternativa" pequeno />
+                  </div>
+                ))}
+              </div>
+            )
+          }
+        </article>
+
+        {
+          encerrada && rel.length > 0 && (
+            <section class="rel rel--fim" aria-labelledby="rel-titulo">
+              <p class="eyebrow">Não fica na mão</p>
+              <h2 id="rel-titulo">Essas ainda tão valendo</h2>
+              <ul class="rel__grade">
+                {rel.map((r) => (
+                  <li>
+                    <MiniCard oferta={r} />
+                  </li>
+                ))}
+              </ul>
+              <a class="btn btn--ink" href="/">
+                Ver todas as ofertas <Icone nome="seta" />
+              </a>
+            </section>
+          )
+        }
+
+        {
+          videos.length > 0 && (
+            <section class="videos" aria-labelledby="videos-titulo">
+              <h2 id="videos-titulo" class="videos__titulo">
+                <Icone nome="play" /> Ver o vídeo dessa oferta
+              </h2>
+              <div class="videos__botoes">
+                {videos.map(([id, nome, url]) => (
+                  <a class={`video video--${id}`} href={url} target="_blank" rel="noopener">
+                    <Icone nome={id} />
+                    {nome}
+                  </a>
+                ))}
+              </div>
+            </section>
+          )
+        }
+
+        <button
+          type="button"
+          class="btn btn--paper compartilhar"
+          data-compartilhar
+          data-titulo={tituloPagina}
+          data-texto={textoCompartilhar}
+          data-url={urlAbsoluta}
+        >
+          <Icone nome="compartilhar" /> Compartilhar oferta
+        </button>
+
+        {!encerrada && rel.length > 0 && <Recorte />}
+        {
+          !encerrada && rel.length > 0 && (
+            <section class="rel" aria-labelledby="rel-titulo">
+              <p class="eyebrow">Aproveita e olha</p>
+              <h2 id="rel-titulo">Mais ofertas que tá valendo</h2>
+              <ul class="rel__grade">
+                {rel.map((r) => (
+                  <li>
+                    <MiniCard oferta={r} />
+                  </li>
+                ))}
+              </ul>
+              <a class="btn btn--ink" href="/">
+                Ver todas as ofertas <Icone nome="seta" />
+              </a>
+            </section>
+          )
+        }
+      </main>
+    </div>
+  </div>
+
+  <Rodape />
+
+  <Sticky alvo="#btn-principal">
+    {
+      encerrada ? (
+        <a class="btn btn--gold" href="/">
+          Ver o que tá valendo <Icone nome="seta" />
+        </a>
+      ) : (
+        <BotaoLoja link={principal} numero={o.numero} local="fixo" />
+      )
+    }
+  </Sticky>
+</Base>
+
+<script>
+  import '../../scripts/oferta';
+</script>
+
+<style>
+  .pagina {
+    position: relative;
+    overflow: clip;
+  }
+  .pagina__in {
+    z-index: 1;
+    padding-top: 18px;
+    padding-bottom: 40px;
+  }
+  .voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 6px 12px 6px 8px;
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    border-radius: 12px;
+    box-shadow: 0 3px 0 0 var(--ink);
+    font: 700 14px/1 var(--sans);
+    text-decoration: none;
+  }
+  .voltar :global(.ico) {
+    width: 18px;
+    height: 18px;
+  }
+  .voltar:active {
+    transform: translateY(3px);
+    box-shadow: none;
+  }
+
+  /* avatar redondo com balão de fala */
+  .quem {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 22px 0 26px;
+  }
+  .quem__avatar {
+    flex: none;
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    background: var(--gold);
+    border: 3px solid var(--ink);
+    border-radius: 50%;
+    box-shadow: 0 4px 0 0 var(--ink);
+  }
+  .quem__balao {
+    position: relative;
+    padding: 10px 14px;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    box-shadow: 0 4px 0 0 var(--ink);
+    font: 700 15px/1.3 var(--sans);
+    rotate: -1.5deg;
+    animation: wob 3.4s ease-in-out infinite;
+  }
+  .quem__balao::before,
+  .quem__balao::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    border-style: solid;
+    translate: 0 -50%;
+  }
+  .quem__balao::before {
+    left: -14px;
+    border-width: 9px 14px 9px 0;
+    border-color: transparent var(--ink) transparent transparent;
+  }
+  .quem__balao::after {
+    left: -9px;
+    border-width: 6px 10px 6px 0;
+    border-color: transparent var(--paper) transparent transparent;
+  }
+
+  /* card principal */
+  .oferta {
+    display: grid;
+    gap: 18px;
+    padding: 20px 18px 24px;
+  }
+  .oferta__eyebrow {
+    color: var(--red-txt);
+  }
+  .oferta__titulo {
+    margin-top: -10px;
+    font-size: clamp(26px, 7.4vw, 31px);
+  }
+  .oferta__foto {
+    position: relative;
+  }
+  .oferta__foto img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 16px;
+  }
+  .oferta__off {
+    position: absolute;
+    top: -12px;
+    right: -10px;
+    font-size: 20px;
+    rotate: 9deg;
+  }
+  .oferta__novo {
+    position: absolute;
+    top: 14px;
+    left: -10px;
+    font-size: 14px;
+  }
+  .oferta__acabou {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    padding: 12px 16px 11px;
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+    box-shadow: 0 6px 0 0 var(--gold);
+    font-size: 21px;
+    white-space: nowrap;
+    rotate: -8deg;
+    animation: none;
+  }
+  .oferta--fim .oferta__foto img {
+    filter: grayscale(1) contrast(0.9);
+    opacity: 0.55;
+  }
+  /* nota: post-it torto */
+  .oferta__nota {
+    position: relative;
+    padding: 14px 16px 14px 18px;
+    background: #fff4a8;
+    border: 2.5px solid var(--ink);
+    border-radius: 4px 14px 14px 14px;
+    box-shadow: 0 4px 0 0 var(--ink);
+    font: 500 15.5px/1.45 var(--sans);
+    rotate: -1deg;
+  }
+  .oferta__nota::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    width: 64px;
+    height: 18px;
+    translate: -50% 0;
+    background: rgb(255 255 255 / 0.7);
+    border: 1.5px solid rgb(20 18 16 / 0.25);
+    rotate: 3deg;
+  }
+  .rotulo {
+    margin-bottom: 10px;
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+  }
+  .oferta__principal {
+    margin-top: 4px;
+  }
+  .divisor {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0 18px;
+    font-weight: 700;
+    font-size: 15px;
+    white-space: nowrap;
+  }
+  .divisor::before,
+  .divisor::after {
+    content: '';
+    flex: 1;
+    border-top: 3px dashed var(--ink);
+    opacity: 0.35;
+  }
+  .oferta__alts {
+    display: grid;
+    gap: 6px;
+  }
+  .alt + .alt {
+    margin-top: 14px;
+  }
+
+  /* vídeos */
+  .videos {
+    margin-top: 34px;
+    text-align: center;
+  }
+  .videos__titulo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 19px;
+  }
+  .videos__titulo :global(.ico) {
+    color: var(--red-txt);
+  }
+  .videos__botoes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .video {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 10px 16px;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    box-shadow: 0 4px 0 0 var(--ink);
+    font: 700 15px/1 var(--sans);
+    text-decoration: none;
+  }
+  .video:active {
+    transform: translateY(4px);
+    box-shadow: none;
+  }
+  .video :global(.ico) {
+    width: 20px;
+    height: 20px;
+  }
+  .video--youtube :global(.ico) {
+    color: #e01f1f;
+  }
+  .video--instagram :global(.ico) {
+    color: #d62976;
+  }
+
+  .compartilhar {
+    margin: 32px 0 26px;
+  }
+
+  /* relacionadas */
+  .rel {
+    margin-top: 26px;
+    text-align: center;
+  }
+  .rel .eyebrow {
+    color: var(--red-txt);
+  }
+  .rel h2 {
+    margin: 8px 0 24px;
+  }
+  .rel__grade {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 14px;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+  .rel--fim {
+    margin-top: 34px;
+    padding: 26px 16px 28px;
+    background: var(--gold);
+    border: 3px solid var(--ink);
+    border-radius: 20px;
+    box-shadow: 0 7px 0 0 var(--ink);
+  }
+  .rel--fim .eyebrow {
+    color: var(--ink);
+  }
+</style>

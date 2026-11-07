@@ -1,0 +1,148 @@
+---
+// Moldura do avatar no topo da home: a persona recortada sobre raios de sol
+// que giram devagar, duas camadas tortas atrás (azul e vermelha), dois
+// adesivos e a etiqueta preta com o logo do canal.
+import fs from 'node:fs';
+import path from 'node:path';
+import Logo from './Logo.astro';
+import { site } from '../site.config';
+
+interface Props {
+  adesivos?: boolean;
+}
+const { adesivos = true } = Astro.props;
+// versão de 420 px (gerada pelo npm run desenhos) para telas comuns de celular
+const pequena = site.avatar.replace(/\.webp$/, '-420.webp');
+const temPequena = pequena !== site.avatar && fs.existsSync(path.join(process.cwd(), 'public', pequena));
+---
+
+<div class="fs" data-anima>
+  <div class="fs__palco">
+    <span class="fs__camada fs__camada--azul" aria-hidden="true"></span>
+    <span class="fs__camada fs__camada--verm" aria-hidden="true"></span>
+    <div class="fs__foto">
+      <span class="fs__raios" aria-hidden="true"></span>
+      <span class="fs__luz" aria-hidden="true"></span>
+      <img
+        src={site.avatar}
+        srcset={temPequena ? `${pequena} 420w, ${site.avatar} 640w` : undefined}
+        sizes={temPequena ? 'min(272px, 73vw)' : undefined}
+        alt={site.avatarAlt}
+        width="640"
+        height="640"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </div>
+    {
+      adesivos && (
+        <>
+          <span class="tag tag--verde fs__tag fs__tag--1">
+            até<b>-70%</b>
+          </span>
+          <span class="tag tag--esq fs__tag fs__tag--2">
+            todo
+            <br />
+            dia tem
+          </span>
+        </>
+      )
+    }
+    <p class="fs__nome"><Logo tema="escuro" /></p>
+  </div>
+</div>
+
+<style>
+  .fs {
+    display: grid;
+    place-items: center;
+    padding: 28px 0 34px;
+  }
+  .fs__palco {
+    position: relative;
+    width: min(262px, 70vw);
+    aspect-ratio: 1 / 0.94;
+  }
+  .fs__camada,
+  .fs__foto {
+    position: absolute;
+    inset: 0;
+    border: 3px solid var(--ink);
+    border-radius: 24px;
+  }
+  .fs__camada--azul {
+    background: var(--blue);
+    transform: rotate(-5deg) translate(-9px, -3px);
+  }
+  .fs__camada--verm {
+    background: var(--red);
+    transform: rotate(4deg) translate(9px, 6px);
+  }
+  .fs__foto {
+    overflow: hidden;
+    background: var(--gold);
+    box-shadow: 0 7px 0 0 var(--ink);
+  }
+  /* raios de sol: um quadrado bem maior que a foto, com o centro no ponto
+     (50%, 62%) da foto, girando devagar em volta desse centro */
+  .fs__raios {
+    position: absolute;
+    left: 50%;
+    top: 62%;
+    width: 190%;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    background: repeating-conic-gradient(from 0deg at 50% 50%, #ffb800 0 12deg, var(--gold) 12deg 24deg);
+    animation: gira 60s linear infinite;
+  }
+  .fs__luz {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 62%, rgb(255 255 255 / 0.8), rgb(255 255 255 / 0) 58%);
+  }
+  .fs__foto img {
+    position: absolute;
+    left: 50%;
+    bottom: -3%;
+    width: 104%;
+    max-width: none;
+    translate: -50% 0;
+  }
+  .fs__tag {
+    position: absolute;
+    z-index: 2;
+  }
+  .fs__tag--1 {
+    top: 12%;
+    right: -38px;
+    font-size: 13px;
+  }
+  .fs__tag--2 {
+    bottom: 26%;
+    left: -40px;
+    font-size: 12.5px;
+  }
+  .fs__nome {
+    --logo: 20px;
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    bottom: -22px;
+    display: flex;
+    padding: 9px 13px 10px;
+    background: var(--ink);
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    box-shadow: 0 4px 0 0 var(--gold);
+    white-space: nowrap;
+    transform: translateX(-50%) rotate(-2deg);
+  }
+  @media (max-height: 740px) and (max-width: 600px) {
+    .fs {
+      padding: 20px 0 30px;
+    }
+    .fs__palco {
+      width: min(218px, 60vw);
+    }
+  }
+</style>

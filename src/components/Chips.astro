@@ -1,0 +1,20 @@
+---
+interface Props {
+  categorias: { id: string; nome: string; emoji: string; total: number }[];
+  total: number;
+}
+const { categorias, total } = Astro.props;
+---
+
+<div class="chips" id="chips" role="group" aria-label="Filtrar ofertas por categoria">
+  <button type="button" class="chip" aria-pressed="true" data-cat="todos">
+    <span aria-hidden="true">🔥</span> Todos <small>{total}</small>
+  </button>
+  {
+    categorias.map((c) => (
+      <button type="button" class="chip" aria-pressed="false" data-cat={c.id}>
+        <span aria-hidden="true">{c.emoji}</span> {c.nome} <small>{c.total}</small>
+      </button>
+    ))
+  }
+</div>

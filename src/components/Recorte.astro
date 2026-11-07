@@ -1,0 +1,47 @@
+---
+// Linha tracejada com tesoura, a mesma "linha de recortar cupom" do banner.
+import Icone from './Icone.astro';
+---
+
+<div class="recorte" aria-hidden="true" data-anima>
+  <Icone nome="tesoura" class="recorte__tesoura" />
+</div>
+
+<style>
+  .recorte {
+    position: relative;
+    height: 26px;
+    margin: 8px 0;
+    container-type: inline-size;
+  }
+  .recorte::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    border-top: 3px dashed rgb(20 18 16 / 0.32);
+  }
+  /* a tesoura vai e volta pela linha, "recortando" */
+  .recorte :global(.recorte__tesoura) {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    width: 28px;
+    height: 28px;
+    padding: 0 3px;
+    background: var(--bg);
+    color: rgb(20 18 16 / 0.6);
+    translate: 0 -50%;
+    animation: corta 9s ease-in-out infinite;
+  }
+  @keyframes corta {
+    0%,
+    100% {
+      translate: 0 -50%;
+    }
+    50% {
+      translate: calc(100cqw - 48px) -50%;
+    }
+  }
+</style>

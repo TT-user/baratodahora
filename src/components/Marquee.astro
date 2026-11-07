@@ -1,0 +1,58 @@
+---
+import Icone from './Icone.astro';
+
+interface Props {
+  itens?: string[];
+}
+const {
+  itens = ['Shopee', 'Mercado Livre', 'Amazon', 'Cupons', 'Achadinhos', 'Frete grátis'],
+} = Astro.props;
+// cada grupo repete a lista duas vezes para cobrir telas largas; o trilho
+// tem dois grupos e anda -50%, então o fim encaixa no começo sem salto
+const grupo = [...itens, ...itens];
+---
+
+<div class="marquee" aria-hidden="true" data-anima>
+  <div class="marquee__trilho">
+    {
+      [0, 1].map(() => (
+        <span class="marquee__grupo">
+          {grupo.map((t) => (
+            <>
+              <span>{t}</span>
+              <Icone nome="estrela" class="marquee__estrela" />
+            </>
+          ))}
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    background: var(--gold);
+    border-block: 3px solid var(--ink);
+    white-space: nowrap;
+  }
+  .marquee__trilho {
+    display: flex;
+    width: max-content;
+    animation: scroll 18s linear infinite;
+  }
+  .marquee__grupo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 8px 11px;
+    font: 400 15px/1 var(--display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .marquee__grupo :global(.marquee__estrela) {
+    width: 16px;
+    height: 16px;
+    color: var(--red-txt);
+  }
+</style>

@@ -1,0 +1,85 @@
+---
+// Card pequeno das "ofertas relacionadas", em grade de duas colunas.
+import { desconto, fotos, reais, urlOferta, type Oferta } from '../lib/ofertas';
+
+interface Props {
+  oferta: Oferta;
+}
+const { oferta: o } = Astro.props;
+const f = fotos(o);
+const pct = desconto(o);
+---
+
+<a class="mini brick" href={urlOferta(o)}>
+  <span class="mini__foto">
+    <img
+      src={f.m}
+      srcset={`${f.p} 200w, ${f.m} 400w`}
+      sizes="(max-width: 460px) 44vw, 196px"
+      width="400"
+      height="400"
+      alt=""
+      loading="lazy"
+      decoding="async"
+    />
+    {pct > 0 && <span class="off mini__off">-{pct}%</span>}
+  </span>
+  <span class="selo mini__selo">#{o.numero}</span>
+  <span class="mini__titulo">{o.titulo}</span>
+  {
+    o.precoPor && (
+      <span class="mini__preco">
+        <span class="sr">por </span>
+        {reais(o.precoPor)}
+      </span>
+    )
+  }
+</a>
+
+<style>
+  .mini {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 8px;
+    padding: 9px 9px 12px;
+    color: var(--ink);
+    box-shadow: 0 6px 0 0 var(--ink);
+  }
+  .mini__foto {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 1;
+    background: #fff;
+    border: 2.5px solid var(--ink);
+    border-radius: 10px;
+  }
+  .mini__foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .mini__off {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+  }
+  .mini__selo {
+    position: absolute;
+    top: -8px;
+    left: -4px;
+    font-size: 12.5px;
+  }
+  .mini__titulo {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    font: 700 14px/1.25 var(--sans);
+  }
+  .mini__preco {
+    font: 400 16px/1 var(--display);
+  }
+</style>

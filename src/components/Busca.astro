@@ -1,0 +1,231 @@
+---
+// Campo de busca da home. Sem JavaScript ele envia ?q= para a home (que
+// filtra quando o script carrega). Com JavaScript filtra a cada tecla.
+import Icone from './Icone.astro';
+
+interface Props {
+  /** número da oferta mais nova, para o exemplo clicável */
+  exemploNumero?: number;
+  /** uma palavra do título da oferta mais nova */
+  exemploPalavra?: string;
+  acao?: string;
+}
+const { exemploNumero, exemploPalavra, acao = '/' } = Astro.props;
+---
+
+<form class="busca" id="busca-form" role="search" action={acao} method="get">
+  <label class="busca__rotulo" for="busca">
+    <span class="busca__seta" aria-hidden="true">↓</span> Busque pelo número ou nome
+  </label>
+  <div class="busca__caixa">
+    <Icone nome="lupa" class="busca__lupa" />
+    <input
+      id="busca"
+      name="q"
+      type="search"
+      placeholder="Digite o nº do vídeo ou o nome do produto"
+      autocomplete="off"
+      autocapitalize="off"
+      autocorrect="off"
+      spellcheck="false"
+      enterkeyhint="search"
+      aria-describedby="busca-status"
+    />
+    <button type="button" class="busca__limpar" data-limpar hidden>
+      <Icone nome="fechar" />
+      <span class="sr">Limpar busca</span>
+    </button>
+  </div>
+  {
+    exemploNumero && (
+      <p class="busca__dica">
+        Ex.:
+        <button type="button" data-exemplo={String(exemploNumero)}>
+          {exemploNumero}
+        </button>
+        {exemploPalavra && (
+          <>
+            ou
+            <button type="button" data-exemplo={exemploPalavra}>
+              {exemploPalavra}
+            </button>
+          </>
+        )}
+      </p>
+    )
+  }
+  <a class="atalho" id="atalho" href="/" hidden>
+    <span class="atalho__foto"><img alt="" width="56" height="56" decoding="async" /></span>
+    <span class="atalho__txt">
+      <span class="atalho__num" data-f="num"></span>
+      <strong data-f="titulo"></strong>
+    </span>
+    <span class="atalho__ir">Abrir <Icone nome="seta" /></span>
+  </a>
+</form>
+
+<style>
+  .busca {
+    display: grid;
+    gap: 10px;
+    margin-top: 26px;
+    text-align: left;
+  }
+  .busca__rotulo {
+    font: 400 12.5px/1.2 var(--display);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .busca__seta {
+    display: inline-block;
+    color: var(--red-txt);
+    animation: wob 1.6s ease-in-out infinite;
+  }
+  .busca__caixa {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    border-radius: 16px;
+    box-shadow: 0 7px 0 0 var(--ink);
+    transition:
+      box-shadow 0.15s ease,
+      transform 0.15s ease;
+  }
+  .busca__caixa:focus-within {
+    box-shadow: 0 7px 0 0 var(--ink), 0 0 0 4px var(--gold);
+    transform: rotate(-0.6deg);
+  }
+  .busca__caixa :global(.busca__lupa) {
+    position: absolute;
+    left: 15px;
+    width: 22px;
+    height: 22px;
+    pointer-events: none;
+  }
+  input {
+    width: 100%;
+    min-width: 0;
+    height: 60px;
+    padding: 0 12px 0 46px;
+    border: 0;
+    border-radius: 13px;
+    background: transparent;
+    font: 500 17px/1 var(--sans);
+    outline: none;
+    text-overflow: ellipsis;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input::placeholder {
+    color: #7a7368;
+    font-size: 13.6px;
+    opacity: 1;
+  }
+  input::-webkit-search-cancel-button {
+    display: none;
+  }
+  .busca__limpar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-right: 6px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+  }
+  .busca__limpar :global(.ico) {
+    width: 18px;
+    height: 18px;
+  }
+  .busca__dica {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .busca__dica button {
+    min-height: 32px;
+    padding: 4px 10px;
+    background: var(--paper);
+    border: 2px dashed var(--ink);
+    border-radius: 9px;
+    font: 700 13.5px/1 var(--sans);
+    color: var(--ink);
+  }
+  .busca__dica button:active {
+    background: var(--gold);
+  }
+
+  /* atalho: quando o número digitado é exatamente o de uma oferta */
+  .atalho {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 10px 9px 9px;
+    background: var(--gold);
+    border: 3px solid var(--ink);
+    border-radius: 16px;
+    box-shadow: 0 6px 0 0 var(--ink);
+    text-decoration: none;
+    animation: atalho 0.4s var(--mola) both;
+  }
+  .atalho:active {
+    transform: translateY(6px);
+    box-shadow: none;
+  }
+  .atalho__foto {
+    width: 56px;
+    height: 56px;
+    overflow: hidden;
+    background: #fff;
+    border: 2.5px solid var(--ink);
+    border-radius: 10px;
+  }
+  .atalho__foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .atalho__txt {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+  .atalho__num {
+    font: 400 12px/1 var(--display);
+    letter-spacing: 0.1em;
+  }
+  .atalho__txt strong {
+    overflow: hidden;
+    font: 700 15px/1.25 var(--sans);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .atalho__ir {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 10px;
+    font: 400 13px/1 var(--display);
+    text-transform: uppercase;
+  }
+  @keyframes atalho {
+    from {
+      opacity: 0;
+      translate: 0 -8px;
+      scale: 0.96;
+    }
+  }
+</style>

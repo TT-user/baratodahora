@@ -1,0 +1,55 @@
+---
+interface Props {
+  titulo?: string;
+}
+const { titulo = 'Dúvidas rápidas' } = Astro.props;
+
+const perguntas = [
+  {
+    p: 'Os links são seguros?',
+    r: [
+      'São. Todo botão leva direto para a página oficial da loja: Shopee, Mercado Livre, Amazon. A compra, o pagamento e a entrega acontecem lá, com a garantia da própria loja.',
+      'Eu não peço nem guardo nenhum dado seu aqui no site.',
+    ],
+  },
+  {
+    p: 'O preço muda?',
+    r: [
+      'Muda, e às vezes rápido. O preço que aparece aqui é o que eu vi no dia (a data fica escrita embaixo dele).',
+      'Estoque, cupom e frete dependem da loja. Confira sempre antes de pagar.',
+    ],
+  },
+  {
+    p: 'Por que tem link de afiliado?',
+    r: [
+      'Quando você compra por um link meu, a loja me paga uma pequena comissão. Você não paga nada a mais por isso.',
+      'É essa comissão que mantém o canal garimpando oferta todo dia.',
+    ],
+  },
+];
+---
+
+<section class="secao" aria-labelledby="faq-titulo">
+  <p class="eyebrow centro">Ficou na dúvida?</p>
+  <h2 id="faq-titulo" class="centro faq-titulo">{titulo}</h2>
+  <div class="faq">
+    {
+      perguntas.map((q) => (
+        <details>
+          <summary>{q.p}</summary>
+          <div>
+            {q.r.map((t) => (
+              <p>{t}</p>
+            ))}
+          </div>
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .faq-titulo {
+    margin: 8px 0 22px;
+  }
+</style>

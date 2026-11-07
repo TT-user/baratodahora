@@ -1,0 +1,125 @@
+---
+import BotaoLoja from './BotaoLoja.astro';
+import Icone from './Icone.astro';
+import Preco from './Preco.astro';
+import { fotos, linkPrincipal, urlOferta, type Oferta } from '../lib/ofertas';
+
+interface Props {
+  oferta: Oferta;
+}
+const { oferta: o } = Astro.props;
+const f = fotos(o);
+---
+
+<section class="destaque" id="destaque" aria-labelledby="destaque-titulo">
+  <span class="tag tag--verm destaque__tag">
+    <Icone nome="raio" /> Destaque do dia
+  </span>
+  <article class="brick destaque__card">
+    <a class="destaque__foto" href={urlOferta(o)} tabindex="-1" aria-hidden="true">
+      <img
+        src={o.imagem}
+        srcset={`${f.m} 400w, ${f.g} 600w, ${o.imagem} 800w`}
+        width="800"
+        height="800"
+        alt=""
+        loading="lazy"
+        decoding="async"
+        sizes="(max-width: 460px) calc(100vw - 70px), 390px"
+      />
+    </a>
+    <span class="selo destaque__selo">#{o.numero}</span>
+    <div class="destaque__corpo">
+      <h2 id="destaque-titulo" class="destaque__titulo">
+        <a href={urlOferta(o)}>{o.titulo}</a>
+      </h2>
+      <Preco precoDe={o.precoDe} precoPor={o.precoPor} vistoEm={o.precoVistoEm} />
+      <BotaoLoja link={linkPrincipal(o)} numero={o.numero} local="destaque" />
+      <a class="destaque__mais" href={urlOferta(o)}>
+        {o.cupom ? 'Ver cupom e outras lojas' : 'Ver detalhes e outras lojas'}
+        <Icone nome="seta" />
+      </a>
+    </div>
+  </article>
+</section>
+
+<style>
+  .destaque {
+    position: relative;
+    margin-top: 34px;
+  }
+  .destaque__tag {
+    position: absolute;
+    z-index: 2;
+    top: -16px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    rotate: 4deg;
+  }
+  .destaque__tag :global(.ico) {
+    color: var(--gold);
+  }
+  .destaque__card {
+    position: relative;
+    overflow: visible;
+    padding: 14px;
+    background: var(--mint);
+  }
+  .destaque__foto {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+  }
+  .destaque__foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 0.4s var(--fora);
+  }
+  @media (hover: hover) {
+    .destaque__foto:hover img {
+      scale: 1.05;
+    }
+  }
+  .destaque__selo {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 18px;
+    rotate: -6deg;
+  }
+  .destaque__corpo {
+    display: grid;
+    gap: 14px;
+    padding: 16px 2px 4px;
+  }
+  .destaque__titulo {
+    font-size: 23px;
+  }
+  .destaque__titulo a {
+    text-decoration: none;
+  }
+  .destaque__mais {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 44px;
+    margin-top: 2px;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .destaque__mais :global(.ico) {
+    width: 16px;
+    height: 16px;
+  }
+</style>

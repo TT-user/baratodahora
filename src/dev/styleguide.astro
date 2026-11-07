@@ -1,0 +1,280 @@
+---
+// /styleguide: todos os componentes numa tela, para aprovar o visual.
+// Existe só no `npm run dev` (integrations/styleguide.mjs).
+import Base from '../layouts/Base.astro';
+import BotaoLoja from '../components/BotaoLoja.astro';
+import Chips from '../components/Chips.astro';
+import Cupom from '../components/Cupom.astro';
+import Deco from '../components/Deco.astro';
+import Destaque from '../components/Destaque.astro';
+import FaixaTopo from '../components/FaixaTopo.astro';
+import Faq from '../components/Faq.astro';
+import FrameStack from '../components/FrameStack.astro';
+import Grupo from '../components/Grupo.astro';
+import Icone from '../components/Icone.astro';
+import Marquee from '../components/Marquee.astro';
+import CaixaVazia from '../components/CaixaVazia.astro';
+import Logo from '../components/Logo.astro';
+import Recorte from '../components/Recorte.astro';
+import MiniCard from '../components/MiniCard.astro';
+import OfertaItem from '../components/OfertaItem.astro';
+import Preco from '../components/Preco.astro';
+import Redes from '../components/Redes.astro';
+import Stats from '../components/Stats.astro';
+import { categoriasComOferta, todasAsOfertas } from '../lib/ofertas';
+
+const todas = await todasAsOfertas();
+const ativas = todas.filter((o) => o.ativo);
+const exemplo = ativas[0];
+const encerrada = todas.find((o) => !o.ativo);
+
+const cores = [
+  ['--bg', '#FBF6EC', 'fundo'],
+  ['--paper', '#FFFFFF', 'cards'],
+  ['--ink', '#141210', 'bordas e texto'],
+  ['--muted', '#5B554C', 'texto de apoio'],
+  ['--red', '#D62828', 'vermelho do banner'],
+  ['--orange', '#FF6A13', 'laranja'],
+  ['--orange-txt', '#F25F0F', 'pílula do título'],
+  ['--gold', '#FFD60A', 'amarelo do banner'],
+  ['--blue', '#2D6BE4', 'foco, camada'],
+  ['--whats', '#25D366', 'WhatsApp, NOVO'],
+  ['--mint', '#D5F5DF', 'stat, destaque'],
+  ['--shopee', '#EE4D2D', 'Shopee (ícone)'],
+  ['--shopee-txt', '#D43C1E', 'Shopee (botão)'],
+  ['--ml', '#FFE600', 'Mercado Livre'],
+  ['--amazon', '#FF9900', 'Amazon'],
+];
+const lojasDemo = [
+  { loja: 'shopee', url: 'https://shopee.com.br', tipo: 'principal' },
+  { loja: 'mercadolivre', url: 'https://mercadolivre.com.br', tipo: 'alternativa' },
+  { loja: 'amazon', url: 'https://amazon.com.br', tipo: 'alternativa' },
+  { loja: 'magalu', url: 'https://magazineluiza.com.br', tipo: 'alternativa' },
+  { loja: 'aliexpress', url: 'https://aliexpress.com', tipo: 'alternativa' },
+  { loja: 'outra', url: 'https://example.com', tipo: 'alternativa' },
+] as const;
+---
+
+<Base titulo="Styleguide · Barato da Hora" descricao="Componentes do site" semIndice classe="pg-sg">
+  <FaixaTopo />
+  <main class="sg">
+    <div class="wrap">
+      <p class="eyebrow">Só em desenvolvimento</p>
+      <h1>Styleguide do <span class="pill">Barato</span> da Hora</h1>
+      <p class="muted">Tudo o que o site usa, numa tela. Mudou um token em global.css? Confira aqui primeiro.</p>
+    </div>
+
+    <section class="wrap bloco">
+      <h2>Cores</h2>
+      <ul class="cores">
+        {
+          cores.map(([nome, hex, uso]) => (
+            <li>
+              <span class="cor" style={`background:${hex}`} />
+              <code>{nome}</code>
+              <span>{hex}</span>
+              <small>{uso}</small>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="wrap bloco">
+      <h2>Logo</h2>
+      <div class="logos">
+        <Logo />
+        <span class="logo-escuro"><Logo tema="escuro" /></span>
+      </div>
+      <Recorte />
+    </section>
+
+    <section class="wrap bloco">
+      <h2>Tipografia</h2>
+      <p class="eyebrow">.eyebrow · Archivo Black 13px</p>
+      <h1>H1 Archivo Black com <span class="pill">pílula</span></h1>
+      <h2>H2 Archivo Black 31px</h2>
+      <h3>H3 Archivo Black 19px</h3>
+      <p>Corpo em DM Sans 16px, linha 1,5. <strong>Negrito 700</strong> e <span class="muted">apoio em --muted</span>.</p>
+    </section>
+
+    <section class="wrap bloco">
+      <h2>.brick</h2>
+      <div class="brick demo-brick">Card padrão: borda 3px, raio 16px, sombra dura de 7px.</div>
+      <a class="brick demo-brick" href="#">Brick que é link: passe o mouse e aperte.</a>
+    </section>
+
+    <section class="wrap bloco">
+      <h2>.btn</h2>
+      {lojasDemo.map((l) => <BotaoLoja link={l} numero={0} local="styleguide" />)}
+      <BotaoLoja link={lojasDemo[0]} numero={0} local="styleguide" nudge />
+      <p class="muted centro">↑ com nudge (dá um tranco a cada 4 s)</p>
+      <BotaoLoja link={lojasDemo[1]} numero={0} local="styleguide" pequeno />
+      <BotaoLoja link={lojasDemo[0]} numero={0} local="styleguide" encerrada />
+      <a class="btn btn--whats" href="#"><Icone nome="whatsapp" /> Entrar no grupo</a>
+      <a class="btn btn--gold" href="#"><Icone nome="lupa" /> Buscar pelo número</a>
+      <a class="btn btn--ink" href="#">Ver todas as ofertas <Icone nome="seta" /></a>
+      <button class="btn btn--paper" type="button">Ver mais ofertas</button>
+    </section>
+
+    <section class="wrap bloco">
+      <h2>.tag, .selo, .off, ícones de loja</h2>
+      <div class="linha">
+        <span class="tag tag--verde">até<b>-70%</b></span>
+        <span class="tag tag--esq">todo<br />dia tem</span>
+        <span class="tag tag--ouro">Ouro</span>
+        <span class="tag tag--verm">Vermelho</span>
+        <span class="tag tag--azul tag--esq">Azul</span>
+      </div>
+      <div class="linha">
+        <span class="selo">#231</span>
+        <span class="off">-55%</span>
+        <span class="lojas">
+          <span class="loja-ico loja-ico--shopee">S</span>
+          <span class="loja-ico loja-ico--mercadolivre">ML</span>
+          <span class="loja-ico loja-ico--amazon">a</span>
+          <span class="loja-ico loja-ico--magalu">M</span>
+          <span class="loja-ico loja-ico--aliexpress">AE</span>
+          <span class="loja-ico">↗</span>
+        </span>
+      </div>
+      <div class="linha icones">
+        {
+          (['lupa', 'seta', 'seta-esq', 'raio', 'sino', 'tesoura', 'estrela', 'compartilhar', 'play', 'copiar', 'check', 'fechar', 'youtube', 'tiktok', 'instagram', 'whatsapp'] as const).map(
+            (n) => <Icone nome={n} rotulo={n} />,
+          )
+        }
+      </div>
+    </section>
+
+    <section class="wrap bloco">
+      <h2>.frame-stack</h2>
+      <FrameStack />
+      <h2>Redes</h2>
+      <Redes />
+    </section>
+
+    <section class="bloco">
+      <div class="wrap"><h2>.marquee</h2></div>
+      <Marquee />
+    </section>
+
+    <section class="wrap bloco">
+      <h2>.chip</h2>
+      <Chips categorias={categoriasComOferta(ativas)} total={ativas.length} />
+    </section>
+
+    <section class="wrap bloco">
+      <h2>Preço e cupom</h2>
+      <Preco precoDe={199.9} precoPor={89.9} vistoEm="2026-11-07" />
+      <Preco precoDe={199.9} precoPor={89.9} vistoEm="2026-11-07" grande />
+      <Cupom codigo="BARATO10" />
+    </section>
+
+    <section class="wrap bloco">
+      <h2>Item da lista</h2>
+      <ol class="lista-demo">
+        {exemplo && <li><OfertaItem oferta={exemplo} /></li>}
+        {encerrada && <li><OfertaItem oferta={encerrada} /></li>}
+      </ol>
+      <h2>Card relacionado</h2>
+      <div class="grade-demo">
+        {ativas.slice(0, 2).map((o) => <MiniCard oferta={o} />)}
+      </div>
+    </section>
+
+    {exemplo && <div class="wrap"><Destaque oferta={exemplo} /></div>}
+
+    <div class="wrap"><Stats postadas={231} /></div>
+
+    <section class="bloco">
+      <div class="wrap"><h2>.dark (grupo, só aparece com link)</h2></div>
+      <Grupo forcar />
+    </section>
+
+    <div class="wrap"><Faq /></div>
+
+    <section class="wrap bloco deco-demo">
+      <h2>.deco e caixa vazia (404)</h2>
+      <Deco />
+      <div class="mascotes">
+        <CaixaVazia />
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .sg {
+    padding: 30px 0 80px;
+  }
+  .bloco {
+    display: grid;
+    gap: 16px;
+    padding-top: 40px;
+  }
+  .cores {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .cores li {
+    display: grid;
+    gap: 2px;
+    font-size: 13px;
+  }
+  .cor {
+    height: 54px;
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    box-shadow: 0 4px 0 0 var(--ink);
+    margin-bottom: 6px;
+  }
+  .cores small {
+    color: var(--muted);
+  }
+  .demo-brick {
+    display: block;
+    padding: 18px;
+  }
+  .linha {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 18px;
+    padding: 10px 0;
+  }
+  .icones :global(.ico) {
+    width: 26px;
+    height: 26px;
+  }
+  .lista-demo {
+    display: grid;
+    gap: 22px;
+  }
+  .grade-demo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .deco-demo {
+    position: relative;
+    min-height: 420px;
+  }
+  .mascotes {
+    position: relative;
+    width: 70%;
+    margin: 0 auto;
+  }
+  .logos {
+    --logo: 34px;
+    display: grid;
+    justify-items: start;
+    gap: 16px;
+  }
+  .logo-escuro {
+    padding: 14px 16px;
+    background: var(--ink);
+    border-radius: 14px;
+  }
+</style>

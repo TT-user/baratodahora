@@ -1,0 +1,36 @@
+{
+  "name": "barato-da-hora-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Link da bio do Barato da Hora: ofertas numeradas dos vídeos, com busca e página própria de cada achadinho.",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "build:rapido": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "nova-oferta": "node scripts/nova-oferta.mjs",
+    "encerrar-oferta": "node scripts/encerrar-oferta.mjs",
+    "destaque": "node scripts/destaque.mjs",
+    "desenhos": "node scripts/desenhos/gerar.mjs"
+  },
+  "dependencies": {
+    "@astrojs/vercel": "^11.0.20",
+    "@fontsource/anton": "^5.3.0",
+    "@fontsource/archivo-black": "^5.3.0",
+    "@fontsource/dm-sans": "^5.3.0",
+    "astro": "^7.4.7",
+    "opentype.js": "^2.0.0",
+    "satori": "^0.63.2",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/node": "^24.19.2",
+    "typescript": "^6.0.3"
+  }
+}

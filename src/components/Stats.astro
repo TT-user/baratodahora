@@ -1,0 +1,102 @@
+---
+// Dois blocos: o maior número de oferta publicado (tirado das próprias
+// ofertas, nada digitado) e a etiqueta vermelha do banner, "oferta nova todo
+// dia", que leva para o YouTube com o pedido de inscrição aberto.
+import Icone from './Icone.astro';
+import { letreiro } from '../lib/marca.mjs';
+import { site } from '../site.config';
+
+interface Props {
+  postadas: number;
+}
+const { postadas } = Astro.props;
+const youtube = site.redes.youtube ? `${site.redes.youtube.replace(/\/+$/, '')}?sub_confirmation=1` : '';
+---
+
+<section class="secao numeros" aria-label="O canal">
+  <div class="stats">
+    <div class="stat">
+      <span class="stat__num">#{postadas}</span>
+      <span class="stat__txt">achadinhos já postados no canal</span>
+    </div>
+    {
+      youtube && (
+        <a class="sino" href={youtube} target="_blank" rel="noopener">
+          <span class="sino__furo" aria-hidden="true" />
+          <Icone nome="sino" class="sino__icone" />
+          <span class="sino__l1" set:html={letreiro('OFERTA NOVA', { cor: '#FFFFFF' })} />
+          <span class="sino__l2" set:html={letreiro('TODO DIA', { cor: '#FFD60A' })} />
+          <span class="sino__cta">Ative o sininho</span>
+          <span class="sr">: oferta nova todo dia no YouTube (abre em outra aba)</span>
+        </a>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .numeros {
+    padding-bottom: 8px;
+  }
+  .stats {
+    align-items: stretch;
+  }
+  /* a etiqueta vermelha do banner, com o furo amarelo em cima */
+  .sino {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 6px;
+    padding: 22px 10px 14px;
+    background: var(--red);
+    color: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 16px;
+    box-shadow: 5px 7px 0 0 var(--ink);
+    text-decoration: none;
+    rotate: 2deg;
+    transition:
+      transform 0.14s ease,
+      box-shadow 0.14s ease;
+  }
+  @media (hover: hover) {
+    .sino:hover {
+      transform: translateY(3px);
+      box-shadow: 4px 4px 0 0 var(--ink);
+    }
+  }
+  .sino:active {
+    transform: translateY(7px);
+    box-shadow: 0 0 0 0 var(--ink);
+  }
+  .sino__furo {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 13px;
+    height: 13px;
+    translate: -50% 0;
+    background: var(--gold);
+    border: 2.5px solid var(--ink);
+    border-radius: 50%;
+  }
+  .sino :global(.sino__icone) {
+    width: 22px;
+    height: 22px;
+    margin-top: 4px;
+    transform-origin: 50% 10%;
+    animation: toca 4s ease-in-out infinite;
+  }
+  .sino__l1 :global(svg) {
+    height: 17px;
+    width: auto;
+  }
+  .sino__l2 :global(svg) {
+    height: 25px;
+    width: auto;
+  }
+  .sino__cta {
+    font: 700 13px/1.1 var(--sans);
+  }
+</style>

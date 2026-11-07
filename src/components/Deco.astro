@@ -1,0 +1,164 @@
+---
+// Decoração de fundo: quadrados vazados, traços girados, brilhos e, no
+// computador, as pilhas de encomenda com etiqueta de % dos dois lados, como
+// no banner do canal. Nunca recebe clique e sai da árvore de acessibilidade.
+import { etiquetaPct } from '../../scripts/desenhos/desenhos.mjs';
+import { caminho } from '../lib/marca.mjs';
+
+interface Props {
+  variante?: 'hero' | 'oferta' | 'erro';
+}
+const { variante = 'hero' } = Astro.props;
+const etiqueta = `<svg viewBox="0 0 150 96">${etiquetaPct(12, 14, 126, 68, -10, caminho)}</svg>`;
+---
+
+<div class:list={['decos', `decos--${variante}`]} aria-hidden="true" data-anima>
+  <svg class="deco d1" viewBox="0 0 100 100" width="96" height="96">
+    <rect x="8" y="8" width="84" height="84" rx="20" fill="none" stroke="#FFD60A" stroke-width="8"></rect>
+  </svg>
+  <svg class="deco d2" viewBox="0 0 100 100" width="84" height="84">
+    <rect x="8" y="8" width="84" height="84" rx="18" fill="none" stroke="#2D6BE4" stroke-width="7"></rect>
+  </svg>
+  <svg class="deco d3" viewBox="0 0 120 20" width="110" height="18">
+    <path d="M4 10h112" stroke="#D62828" stroke-width="7" stroke-linecap="round" stroke-dasharray="1 16"></path>
+  </svg>
+  <svg class="deco d4" viewBox="0 0 40 40" width="34" height="34">
+    <path d="M20 2Q23 17 38 20Q23 23 20 38Q17 23 2 20Q17 17 20 2Z" fill="#FFD60A" stroke="#141210" stroke-width="3" stroke-linejoin="round"></path>
+  </svg>
+  <svg class="deco d5" viewBox="0 0 40 40" width="24" height="24">
+    <path d="M20 2Q23 17 38 20Q23 23 20 38Q17 23 2 20Q17 17 20 2Z" fill="#fff" stroke="#141210" stroke-width="3" stroke-linejoin="round"></path>
+  </svg>
+  <div class="deco d6" set:html={etiqueta}></div>
+  {
+    variante === 'hero' && (
+      <>
+        <img class="pilha pilha--e" src="/brand/pilha-e.svg" alt="" width="460" height="410" loading="lazy" decoding="async" />
+        <img class="pilha pilha--d" src="/brand/pilha-d.svg" alt="" width="460" height="410" loading="lazy" decoding="async" />
+      </>
+    )
+  }
+</div>
+
+<style>
+  .decos {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .d1 {
+    left: -34px;
+    top: 168px;
+    rotate: 16deg;
+  }
+  .d2 {
+    right: -30px;
+    top: 66px;
+    rotate: -12deg;
+  }
+  .d3 {
+    right: -10px;
+    top: 330px;
+    rotate: -24deg;
+  }
+  .d4,
+  .d5 {
+    opacity: 0.9;
+    animation: brilha 3.4s ease-in-out infinite;
+  }
+  .d4 {
+    left: 14px;
+    top: 74px;
+  }
+  .d5 {
+    right: 26px;
+    top: 260px;
+    animation-delay: -1.2s;
+  }
+  .d6 {
+    left: 4px;
+    top: 248px;
+    width: 52px;
+    opacity: 0.95;
+    rotate: -8deg;
+    animation: wob 3s ease-in-out infinite;
+  }
+  .d6 :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .pilha {
+    display: none;
+    position: absolute;
+    top: 150px;
+    width: 300px;
+    height: auto;
+  }
+  /* no computador as pilhas entram dos dois lados da coluna, como no banner */
+  @media (min-width: 900px) {
+    .pilha {
+      display: block;
+    }
+    .pilha--e {
+      left: calc(50% - 600px);
+      animation: wob 4s ease-in-out infinite;
+    }
+    .pilha--d {
+      right: calc(50% - 600px);
+      top: 210px;
+      animation: wob 4s ease-in-out -2s infinite;
+    }
+    .d6,
+    .d1 {
+      display: none;
+    }
+  }
+  @media (max-width: 419px) {
+    .d6 {
+      display: none;
+    }
+  }
+  /* página da oferta e 404: menos coisa, mais acima */
+  .decos--oferta .d1 {
+    top: 40px;
+  }
+  .decos--oferta .d3,
+  .decos--oferta .d6 {
+    display: none;
+  }
+  .decos--oferta .d5 {
+    top: 120px;
+  }
+  .decos--erro .d6 {
+    display: none;
+  }
+  @keyframes brilha {
+    0%,
+    100% {
+      scale: 1;
+      rotate: 0deg;
+    }
+    50% {
+      scale: 0.72;
+      rotate: 45deg;
+    }
+  }
+  @media (min-width: 720px) {
+    .d1 {
+      left: calc(50% - 330px);
+    }
+    .d2 {
+      right: calc(50% - 320px);
+    }
+    .d3 {
+      right: calc(50% - 300px);
+    }
+    .d4 {
+      left: calc(50% - 280px);
+    }
+    .d5 {
+      right: calc(50% - 270px);
+    }
+  }
+</style>

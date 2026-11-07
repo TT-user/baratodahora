@@ -1,0 +1,81 @@
+---
+import Logo from './Logo.astro';
+import Redes from './Redes.astro';
+import { site } from '../site.config';
+
+const ano = new Date().getFullYear();
+---
+
+<footer class="rodape dark">
+  <div class="tricolor" aria-hidden="true"></div>
+  <div class="wrap rodape__in">
+    <a class="rodape__marca" href="/">
+      <Logo />
+    </a>
+    <p class="rodape__slogan">{site.slogan}</p>
+    <Redes tamanho="pequeno" />
+    <p class="rodape__aviso">{site.avisoAfiliado}</p>
+    <p class="rodape__aviso">
+      Não somos canal oficial da Shopee, do Mercado Livre nem da Amazon. As marcas são de seus donos.
+    </p>
+    <p class="rodape__links">
+      <a href="/">Todas as ofertas</a>
+      <span aria-hidden="true">·</span>
+      <a href="/privacidade">Privacidade</a>
+    </p>
+    <p class="rodape__copy">© {ano} {site.nome}</p>
+  </div>
+</footer>
+
+<style>
+  .rodape__in {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    padding-top: 40px;
+    padding-bottom: calc(110px + env(safe-area-inset-bottom));
+    text-align: center;
+  }
+  .rodape__marca {
+    --logo: 26px;
+    display: flex;
+    padding: 14px 18px 15px;
+    background: var(--gold);
+    border: 3px solid var(--paper);
+    border-radius: 14px;
+    box-shadow: 0 6px 0 0 var(--red);
+    text-decoration: none;
+    rotate: -2deg;
+    transition: rotate 0.3s var(--mola);
+  }
+  @media (hover: hover) {
+    .rodape__marca:hover {
+      rotate: 1deg;
+    }
+  }
+  .rodape__slogan {
+    font-weight: 700;
+  }
+  .rodape__aviso {
+    max-width: 360px;
+    color: #c9c2b6;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .rodape__links {
+    display: flex;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 14.5px;
+  }
+  .rodape__links a {
+    display: inline-block;
+    padding: 10px 2px;
+    color: #fff;
+    text-underline-offset: 4px;
+  }
+  .rodape__copy {
+    color: #c9c2b6;
+    font-size: 13px;
+  }
+</style>

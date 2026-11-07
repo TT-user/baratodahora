@@ -1,0 +1,55 @@
+---
+import { desconto, diaMes, reais } from '../lib/ofertas';
+
+interface Props {
+  precoDe?: number;
+  precoPor?: number;
+  vistoEm?: string;
+  grande?: boolean;
+}
+const { precoDe, precoPor, vistoEm, grande = false } = Astro.props;
+const pct = desconto({ precoDe, precoPor });
+---
+
+{
+  precoPor && (
+    <div class:list={['bloco-preco', { 'bloco-preco--grande': grande }]}>
+      <p class="preco">
+        {precoDe && (
+          <del>
+            <span class="sr">de </span>
+            {reais(precoDe)}
+          </del>
+        )}
+        <strong>
+          <span class="sr">por </span>
+          {reais(precoPor)}
+        </strong>
+        {pct > 0 && <span class="off">-{pct}%</span>}
+      </p>
+      {vistoEm && <p class="bloco-preco__visto">preço visto em {diaMes(vistoEm)}, pode mudar</p>}
+    </div>
+  )
+}
+
+<style>
+  .bloco-preco {
+    display: grid;
+    gap: 4px;
+  }
+  .bloco-preco--grande .preco {
+    font-size: 20px;
+  }
+  .bloco-preco--grande .preco :global(strong) {
+    font-size: 1.6em;
+  }
+  .bloco-preco--grande .off {
+    padding: 5px 8px 6px;
+    font-size: 15px;
+    box-shadow: 0 3px 0 0 var(--ink);
+  }
+  .bloco-preco__visto {
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+</style>

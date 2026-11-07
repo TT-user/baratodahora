@@ -1,0 +1,112 @@
+---
+import Icone from './Icone.astro';
+
+interface Props {
+  codigo: string;
+}
+const { codigo } = Astro.props;
+---
+
+<div class="cupom">
+  <span class="cupom__tesoura" aria-hidden="true">✂</span>
+  <div class="cupom__txt">
+    <span class="cupom__rotulo">Cupom</span>
+    <code class="cupom__codigo">{codigo}</code>
+  </div>
+  <button type="button" class="cupom__btn" data-copiar={codigo}>
+    <Icone nome="copiar" class="cupom__ico-copiar" />
+    <Icone nome="check" class="cupom__ico-ok" />
+    <span data-rotulo>Copiar</span>
+  </button>
+</div>
+
+<style>
+  .cupom {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 12px 12px 16px;
+    background: #fff7d6;
+    border: 3px dashed var(--ink);
+    border-radius: 14px;
+  }
+  .cupom__tesoura {
+    position: absolute;
+    top: -13px;
+    left: 18px;
+    padding: 0 4px;
+    background: var(--paper);
+    font-size: 18px;
+    line-height: 1;
+    rotate: -8deg;
+  }
+  .cupom__txt {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+    flex: 1;
+  }
+  .cupom__rotulo {
+    font: 400 11px/1 var(--display);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  /* cupom cortado com reticências não serve para nada: quebra se precisar */
+  .cupom__codigo {
+    font: 400 clamp(17px, 5.2vw, 22px) / 1.1 var(--display);
+    letter-spacing: 0.03em;
+    overflow-wrap: anywhere;
+  }
+  .cupom__btn {
+    position: relative;
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 48px;
+    padding: 10px 14px;
+    background: var(--ink);
+    color: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    box-shadow: 0 4px 0 0 var(--gold);
+    font: 400 14px/1 var(--display);
+    text-transform: uppercase;
+    transition:
+      transform 0.12s ease,
+      box-shadow 0.12s ease,
+      background-color 0.2s ease;
+  }
+  .cupom__btn:active {
+    transform: translateY(4px);
+    box-shadow: none;
+  }
+  .cupom__btn :global(.ico) {
+    width: 17px;
+    height: 17px;
+  }
+  .cupom__btn :global(.cupom__ico-ok) {
+    display: none;
+  }
+  .cupom__btn.ok {
+    background: var(--whats);
+    color: var(--ink);
+  }
+  .cupom__btn.ok :global(.cupom__ico-ok) {
+    display: block;
+  }
+  .cupom__btn.ok :global(.cupom__ico-copiar) {
+    display: none;
+  }
+  .cupom:has(.ok) {
+    animation: carimbo 0.45s var(--mola);
+  }
+  @keyframes carimbo {
+    40% {
+      scale: 1.04;
+      rotate: -1deg;
+    }
+  }
+</style>

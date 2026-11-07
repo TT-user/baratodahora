@@ -1,0 +1,183 @@
+---
+// Um item da lista da home. Sem `oferta`, vira o molde vazio que o script
+// clona para "Ver mais" e para os resultados da busca (mesma marcação, mesmo
+// estilo). Os campos que o script preenche têm data-f.
+import Icone from './Icone.astro';
+import { LOJA, LOJAS } from '../lib/catalogo.mjs';
+import { desconto, ehNova, fotos, lojasDaOferta, reais, urlOferta, type Oferta } from '../lib/ofertas';
+
+interface Props {
+  oferta?: Oferta;
+}
+const { oferta: o } = Astro.props;
+const f = o ? fotos(o) : undefined;
+const pct = o ? desconto(o) : 0;
+const lojas = o ? lojasDaOferta(o) : [];
+const nova = !!o && o.ativo && ehNova(o);
+---
+
+<a
+  class:list={['item', 'brick', { 'item--fim': o && !o.ativo }]}
+  href={o ? urlOferta(o) : '/'}
+  data-n={o?.numero}
+  data-pub={o?.publicadoEm}
+>
+  <span class="item__foto">
+    <img
+      src={f?.p}
+      srcset={f ? `${f.p} 200w, ${f.m} 400w` : undefined}
+      sizes="88px"
+      width="88"
+      height="88"
+      alt=""
+      loading="lazy"
+      decoding="async"
+    />
+  </span>
+  <span class="selo item__selo" data-f="num">#{o?.numero}</span>
+  <span class="item__corpo">
+    <span class="item__titulo" data-f="titulo">{o?.titulo}</span>
+    <span class="preco item__preco" data-f="preco" hidden={!o?.precoPor}>
+      <del data-f="de" hidden={!o?.precoDe}>
+        <span class="sr">de </span><span data-f="de-v">{o?.precoDe ? reais(o.precoDe) : ''}</span>
+      </del>
+      <strong><span class="sr">por </span><span data-f="por-v">{o?.precoPor ? reais(o.precoPor) : ''}</span></strong>
+      <span class="off" data-f="off" hidden={!pct}>-{pct}%</span>
+    </span>
+    <span class="lojas" aria-hidden="true">
+      {
+        LOJAS.map((l) => (
+          <span class={`loja-ico loja-ico--${l}`} data-loja-ico={l} hidden={!lojas.includes(l)}>
+            {LOJA[l].marca}
+          </span>
+        ))
+      }
+    </span>
+  </span>
+  <span class="item__novo" data-f="novo" hidden={!nova}>novo</span>
+  <span class="item__fim" data-f="fim" hidden={!o || o.ativo}>acabou</span>
+  <span class="item__seta" aria-hidden="true"><Icone nome="seta" /></span>
+</a>
+
+<style>
+  .item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr) 30px;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 11px 11px 11px;
+    color: var(--ink);
+  }
+  .item__foto {
+    width: 88px;
+    height: 88px;
+    overflow: hidden;
+    background: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+  }
+  .item__foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 0.3s var(--fora);
+  }
+  @media (hover: hover) {
+    .item:hover .item__foto img {
+      scale: 1.07;
+    }
+    .item:hover .item__seta {
+      background: var(--gold);
+      translate: 3px 0;
+    }
+  }
+  .item__selo {
+    position: absolute;
+    z-index: 1;
+    left: 2px;
+    top: -10px;
+  }
+  .item__corpo {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+  .item__titulo {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    font: 700 16px/1.25 var(--sans);
+  }
+  .item__preco {
+    font-size: 15px;
+    row-gap: 2px;
+  }
+  .item__preco del {
+    flex-basis: 100%;
+    font-size: 13.5px;
+  }
+  .item__novo,
+  .item__fim {
+    position: absolute;
+    z-index: 1;
+    top: -11px;
+    right: 10px;
+    padding: 4px 7px 5px;
+    border: 2.5px solid var(--ink);
+    border-radius: 8px;
+    box-shadow: 0 3px 0 0 var(--ink);
+    font: 400 12px/1 var(--display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    rotate: 5deg;
+  }
+  .item__novo {
+    background: var(--whats);
+    animation: pulsa 1.8s ease-in-out infinite;
+  }
+  .item__fim {
+    background: var(--ink);
+    color: #fff;
+  }
+  .item__seta {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 2.5px solid var(--ink);
+    border-radius: 9px;
+    background: var(--paper);
+    transition:
+      translate 0.2s var(--mola),
+      background-color 0.15s ease;
+  }
+  .item__seta :global(.ico) {
+    width: 16px;
+    height: 16px;
+  }
+  .item--fim {
+    background: #f1ece2;
+  }
+  .item--fim .item__foto img {
+    filter: grayscale(1);
+    opacity: 0.6;
+  }
+  .item--fim .item__titulo,
+  .item--fim .item__preco {
+    color: var(--muted);
+  }
+
+  /* entra subindo conforme rola, onde o navegador anima pela rolagem */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .item {
+        animation: entra linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 55%;
+      }
+    }
+  }
+</style>

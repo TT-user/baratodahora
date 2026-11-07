@@ -1,0 +1,101 @@
+---
+// Esqueleto de todas as páginas: <head> com SEO e OG, fontes, toast e o
+// script comum (sticky, pausa de animação, rastreio desligado por padrão).
+import '@fontsource/archivo-black/latin-400.css';
+import '@fontsource/dm-sans/latin-400.css';
+import '@fontsource/dm-sans/latin-500.css';
+import '@fontsource/dm-sans/latin-700.css';
+import '../styles/global.css';
+import fonteTitulo from '@fontsource/archivo-black/files/archivo-black-latin-400-normal.woff2?url';
+import fonteTexto from '@fontsource/dm-sans/files/dm-sans-latin-400-normal.woff2?url';
+import { site } from '../site.config';
+
+interface Props {
+  titulo: string;
+  descricao: string;
+  /** caminho da página, para o canonical ("/o/passador...") */
+  caminho?: string;
+  og?: { imagem: string; largura: number; altura: number; tipo: string; alt?: string };
+  ogTipo?: 'website' | 'article' | 'product';
+  semIndice?: boolean;
+  classe?: string;
+}
+
+const {
+  titulo,
+  descricao,
+  caminho = Astro.url.pathname,
+  og = { imagem: '/og-home.png', largura: 1200, altura: 630, tipo: 'image/png', alt: `${site.nome}: ${site.slogan}` },
+  ogTipo = 'website',
+  semIndice = false,
+  classe,
+} = Astro.props;
+
+const absoluta = (p: string) => new URL(p, site.dominio).href;
+const canonical = absoluta(caminho);
+const imagemOg = absoluta(og.imagem);
+const rastreio = site.rastreio.ativo ? site.rastreio.provedor : undefined;
+---
+
+<!doctype html>
+<html lang="pt-BR" data-rastreio={rastreio}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{titulo}</title>
+    <meta name="description" content={descricao} />
+    <link rel="canonical" href={canonical} />
+    {semIndice && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#D62828" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="preload" href={fonteTitulo} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={fonteTexto} as="font" type="font/woff2" crossorigin />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <meta property="og:site_name" content={site.nome} />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:type" content={ogTipo} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:image" content={imagemOg} />
+    <meta property="og:image:secure_url" content={imagemOg} />
+    <meta property="og:image:type" content={og.tipo} />
+    <meta property="og:image:width" content={String(og.largura)} />
+    <meta property="og:image:height" content={String(og.altura)} />
+    {og.alt && <meta property="og:image:alt" content={og.alt} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descricao} />
+    <meta name="twitter:image" content={imagemOg} />
+
+    <slot name="head" />
+
+    {
+      rastreio === 'vercel' && (
+        <>
+          <script is:inline>
+            window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+          </script>
+          <script is:inline defer src="/_vercel/insights/script.js"></script>
+        </>
+      )
+    }
+    {
+      rastreio === 'umami' && site.rastreio.umamiId && (
+        <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id={site.rastreio.umamiId}></script>
+      )
+    }
+  </head>
+  <body class={classe}>
+    <slot />
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script>
+      import '../scripts/comum';
+    </script>
+  </body>
+</html>

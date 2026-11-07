@@ -1,0 +1,51 @@
+---
+// Logo do banner do canal: "BARATO" e, na caixa vermelha torta, "DA HORA".
+// As letras são caminhos SVG gerados da Anton no build (lib/marca.mjs).
+// A altura das maiúsculas acompanha o font-size (use --logo para mudar).
+import { letreiro } from '../lib/marca.mjs';
+import { site } from '../site.config';
+
+interface Props {
+  tema?: 'claro' | 'escuro';
+  class?: string;
+}
+const { tema = 'claro', class: classe } = Astro.props;
+const barato = letreiro('BARATO', { classe: 'logo__barato' });
+const hora = letreiro('DA HORA', { cor: '#FFFFFF' });
+---
+
+<span class:list={['logo', `logo--${tema}`, classe]} role="img" aria-label={site.nome}>
+  <Fragment set:html={barato} />
+  <span class="logo__hora" set:html={hora}></span>
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.14em;
+    color: var(--ink);
+    font-size: var(--logo, 26px);
+    line-height: 1;
+  }
+  .logo--escuro {
+    color: #fff;
+  }
+  .logo :global(svg) {
+    display: block;
+    width: auto;
+    height: 1em;
+  }
+  .logo__hora {
+    display: inline-flex;
+    padding: 0.13em 0.2em;
+    background: var(--red);
+    border: max(2px, 0.07em) solid var(--ink);
+    border-radius: 0.1em;
+    box-shadow: 0 0.08em 0 0 var(--ink);
+    rotate: -2.5deg;
+  }
+  .logo__hora :global(svg) {
+    height: 0.82em;
+  }
+</style>
