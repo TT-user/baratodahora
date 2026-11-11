@@ -27,7 +27,10 @@ O texto vem do jeito que eu escrevo, por exemplo:
 | "destaque" | `--destaque` |
 | uma observação curta sobre o produto | `--nota "..."` |
 
-Se faltar **título, link principal ou foto**, pergunte só o que falta, numa mensagem, e pare.
+Sem **título ou foto**, tire da página da loja com
+`python -I "C:/Users/mathe/.claude/skills/adicionar-produto-barato-da-hora/buscar_produto.py" "<link>" "<pasta>"`
+(nome e foto, nunca o preço). Se ainda faltar **título, link principal ou foto**, pergunte só o
+que falta, numa mensagem, e pare.
 Não invente preço, cupom nem link. Preço não é dado que falta: sem ele, siga sem perguntar.
 
 ## 2. Cadastre
