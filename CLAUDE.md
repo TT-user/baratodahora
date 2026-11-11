@@ -11,6 +11,8 @@ O README explica tudo para humanos; aqui ficam as regras para quem mexe no códi
 - **Commit de oferta:** `git add` só dos arquivos da oferta (o JSON e `public/ofertas/<n>.webp`),
   confira `git diff --cached --name-only`, mensagem `oferta #<n>: <título curto>`.
 - **Nunca invente** preço, cupom, link ou número de oferta. Faltou, pergunte.
+- **Preço só quando o Matheus escrever** (pedido de 11/11/2026). Sem preço no pedido, a oferta vai
+  sem `precoDe`/`precoPor`; não busque o preço na página da loja nem pergunte.
 - **As regras de uma oferta** moram em `src/lib/oferta-schema.mjs`, usado pelo site e pelo script.
   Mudou uma regra, ela vale para os dois.
 - **Cores e componentes base** em `src/styles/global.css`. Texto branco só sobre `--red-txt`,

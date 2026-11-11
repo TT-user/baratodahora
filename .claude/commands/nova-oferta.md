@@ -20,7 +20,7 @@ O texto vem do jeito que eu escrevo, por exemplo:
 | a PRIMEIRA loja com link (ou a que eu chamar de "do vídeo") | `--principal "loja=URL"` |
 | as outras lojas com link | `--alt "loja=URL"` (uma por loja); se eu der um texto para o botão, `--alt "loja=URL\|texto"` |
 | apelidos de loja | shopee, ml / mercado livre, amazon / amz, magalu, ali / aliexpress, outra |
-| "de 199 por 89", "de 199,90 por 89,90" | `--de 199,90 --por 89,90` (só "por" também vale) |
+| "de 199 por 89", "de 199,90 por 89,90" | `--de 199,90 --por 89,90` (só "por" também vale). **Só se eu escrever o preço:** sem preço no meu texto, a oferta vai sem preço. Nunca busque o preço na página da loja. |
 | cupom | `--cupom CODIGO` (sempre em maiúsculas, como eu escrevi) |
 | foto / imagem (caminho ou URL) | `--imagem "..."` (aspas: o caminho pode ter espaço) |
 | links de vídeo do TikTok, YouTube, Instagram | `--tiktok`, `--youtube`, `--instagram` |
@@ -28,7 +28,7 @@ O texto vem do jeito que eu escrevo, por exemplo:
 | uma observação curta sobre o produto | `--nota "..."` |
 
 Se faltar **título, link principal ou foto**, pergunte só o que falta, numa mensagem, e pare.
-Não invente preço, cupom nem link.
+Não invente preço, cupom nem link. Preço não é dado que falta: sem ele, siga sem perguntar.
 
 ## 2. Cadastre
 
