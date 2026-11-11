@@ -16,6 +16,11 @@ O README explica tudo para humanos; aqui ficam as regras para quem mexe no códi
 - **Grupos de WhatsApp** (página `/grupo`, bloco da home, rodapé): lista em `src/data/grupos.json`,
   mudada só por `npm run grupo` ou `/grupo`; regras em `src/lib/grupo-schema.mjs`. O botão leva ao
   primeiro grupo não cheio. Sem cadastro na página, a pedido (11/11/2026). Nunca invente convite.
+- **Proteção do conteúdo** (pedido de 11/11/2026): texto e imagem sem seleção nem arrastar
+  (`global.css`, logo abaixo do `html`), sem botão direito, copiar e atalhos do DevTools
+  (F12, Ctrl+Shift+I/J/C, Ctrl+U, Ctrl+S) em `src/scripts/protecao.ts`, carregado pelo `Base`.
+  Campos continuam editáveis e copiar link/cupom passa pelo `copiar()` do `comum.ts`, nunca por
+  seleção. Não impede inspeção de verdade (menu do navegador, JS desligado, curl): não prometa isso.
 - **As regras de uma oferta** moram em `src/lib/oferta-schema.mjs`, usado pelo site e pelo script.
   Mudou uma regra, ela vale para os dois.
 - **Cores e componentes base** em `src/styles/global.css`. Texto branco só sobre `--red-txt`,
