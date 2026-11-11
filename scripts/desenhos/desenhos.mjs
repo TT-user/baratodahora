@@ -135,6 +135,118 @@ export function caixaVazia(caminho) {
 </svg>`;
 }
 
+/* ------------------------------------------------------------------ */
+/* Dinheiro da economia (topo do /grupo)                               */
+/* ------------------------------------------------------------------ */
+
+const VERDE = '#5CC57A';
+const VERDE_CLARO = '#A6E8B7';
+const VERDE_TINTA = '#1F7A3D';
+const OURO_ESCURO = '#E0A800';
+const ROSA = '#FF92B4';
+const ROSA_ESCURO = '#E56B94';
+
+/**
+ * Texto em Anton com a altura pedida, centrado em cx, cy.
+ * @param {(t: string, tam: number) => { d: string, x: number, y: number, largura: number, altura: number }} caminho
+ */
+function anton(texto, cx, cy, altura, cor, caminho) {
+  const t = caminho(texto, (100 * altura) / caminho(texto, 100).altura);
+  return `<path d="${t.d}" fill="${cor}" stroke="none" transform="translate(${r(cx - (t.x + t.largura / 2))} ${r(cy - (t.y + t.altura / 2))})"/>`;
+}
+
+/** SVG solto com a sombra dura do desenho inteiro (a silhueta em tinta, deslocada). */
+function comSombra(largura, altura, desenho, dx = 7, dy = 9) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${largura} ${altura}" width="${largura}" height="${altura}">
+  <defs>
+    <filter id="s"><feFlood flood-color="${TINTA}"/><feComposite in2="SourceAlpha" operator="in"/></filter>
+    <g id="d" stroke="${TINTA}" stroke-linejoin="round" stroke-linecap="round">${desenho}</g>
+  </defs>
+  <use href="#d" transform="translate(${dx} ${dy})" filter="url(#s)"/>
+  <use href="#d"/>
+</svg>`;
+}
+
+/** Retângulo com as bordas de cima e de baixo onduladas, em paralelo (a cédula voando). */
+function onda(xa, xb, ya, yb, amp) {
+  const w = xb - xa;
+  return `M${xa} ${ya} C${r(xa + w / 3)} ${ya - amp} ${r(xa + (2 * w) / 3)} ${ya + amp} ${xb} ${ya} L${xb} ${yb} C${r(xb - w / 3)} ${yb + amp} ${r(xa + w / 3)} ${yb - amp} ${xa} ${yb}Z`;
+}
+
+/**
+ * Cédula verde ondulada, com "R$" no meio. Sem valor escrito: é dinheiro de
+ * desenho, não nota de verdade.
+ * @param {(t: string, tam: number) => { d: string, x: number, y: number, largura: number, altura: number }} caminho
+ */
+export function cedula(caminho) {
+  const cantos = [
+    [42, 46],
+    [196, 46],
+    [42, 92],
+    [196, 92],
+  ];
+  return comSombra(
+    250,
+    150,
+    `<path d="${onda(12, 226, 20, 120, 13)}" fill="${VERDE}" stroke-width="6"/>
+    <path d="${onda(26, 212, 34, 106, 12)}" fill="${VERDE_CLARO}" stroke-width="4"/>
+    ${cantos.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="7" fill="${VERDE}" stroke-width="3.5"/>`).join('')}
+    <path d="M62 62 L82 62 M62 76 L76 76 M156 62 L176 62 M162 76 L176 76" fill="none" stroke="${VERDE_TINTA}" stroke-width="5"/>
+    <ellipse cx="119" cy="69" rx="28" ry="26" fill="#F2FFF5" stroke-width="4"/>
+    ${anton('R$', 119, 69, 26, VERDE_TINTA, caminho)}`,
+  );
+}
+
+/**
+ * Moeda dourada com "R$" e um brilho.
+ * @param {(t: string, tam: number) => { d: string, x: number, y: number, largura: number, altura: number }} caminho
+ */
+export function moeda(caminho) {
+  return comSombra(
+    124,
+    124,
+    `<circle cx="56" cy="56" r="48" fill="${OURO}" stroke-width="6"/>
+    <circle cx="56" cy="56" r="35" fill="none" stroke="${OURO_ESCURO}" stroke-width="6"/>
+    ${anton('R$', 56, 57, 30, TINTA, caminho)}
+    <path d="M17.5 42 A41 41 0 0 1 38.7 18.8" fill="none" stroke="#FFFFFF" stroke-width="5" opacity=".9"/>`,
+    6,
+    7,
+  );
+}
+
+/**
+ * Cofrinho de porquinho com uma moeda entrando na fenda.
+ * @param {(t: string, tam: number) => { d: string, x: number, y: number, largura: number, altura: number }} caminho
+ */
+export function cofrinho(caminho) {
+  return comSombra(
+    266,
+    232,
+    `<clipPath id="fenda"><rect x="0" y="0" width="266" height="62"/></clipPath>
+    <path d="M150 62 L162 30 L182 60Z" fill="${ROSA_ESCURO}" stroke-width="6"/>
+    <path d="M168 64 L188 26 L208 70Z" fill="${ROSA}" stroke-width="6"/>
+    <rect x="64" y="150" width="28" height="56" rx="10" fill="${ROSA_ESCURO}" stroke-width="6"/>
+    <rect x="182" y="150" width="28" height="56" rx="10" fill="${ROSA_ESCURO}" stroke-width="6"/>
+    <rect x="88" y="150" width="30" height="62" rx="10" fill="${ROSA}" stroke-width="6"/>
+    <rect x="150" y="150" width="30" height="62" rx="10" fill="${ROSA}" stroke-width="6"/>
+    <path d="M44 118 C22 116 18 92 32 90 C46 88 44 110 24 114" fill="none" stroke-width="6"/>
+    <ellipse cx="132" cy="122" rx="96" ry="70" fill="${ROSA}" stroke-width="6"/>
+    <path d="M66 98 A84 62 0 0 1 104 64" fill="none" stroke="#FFFFFF" stroke-width="7" opacity=".75"/>
+    <ellipse cx="198" cy="140" rx="12" ry="8" fill="${ROSA_ESCURO}" stroke="none" opacity=".8"/>
+    <ellipse cx="228" cy="128" rx="20" ry="26" fill="${ROSA}" stroke-width="6"/>
+    <ellipse cx="221" cy="128" rx="3.5" ry="6.5" fill="${TINTA}" stroke="none"/>
+    <ellipse cx="235" cy="128" rx="3.5" ry="6.5" fill="${TINTA}" stroke="none"/>
+    <circle cx="190" cy="104" r="7" fill="${TINTA}" stroke="none"/>
+    <circle cx="192.5" cy="101.5" r="2.4" fill="#FFFFFF" stroke="none"/>
+    <rect x="104" y="56" width="52" height="12" rx="6" fill="${TINTA}" stroke="none"/>
+    <g clip-path="url(#fenda)">
+      <circle cx="130" cy="38" r="24" fill="${OURO}" stroke-width="5"/>
+      <circle cx="130" cy="38" r="16" fill="none" stroke="${OURO_ESCURO}" stroke-width="4"/>
+      ${anton('R$', 130, 38, 14, TINTA, caminho)}
+    </g>`,
+  );
+}
+
 /** Raios de sol: fatias alternadas em volta de (cx, cy). Usado no OG. */
 export function raiosDeSol(cx, cy, raio, fatias, cor) {
   const passo = 360 / fatias;

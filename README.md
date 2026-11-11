@@ -175,6 +175,10 @@ página da oferta). A prévia do WhatsApp da home é refeita sozinha no build.
 `npm run desenhos` também refaz o favicon. As imagens das ofertas de exemplo (desenhos 2D em SVG,
 `scripts/desenhos/desenhos.mjs`) saem com `npm run desenhos -- --exemplos`.
 
+O dinheiro que flutua no topo do `/grupo` (cédula, moeda e cofrinho) também mora em
+`desenhos.mjs` e vira `/brand/dinheiro-<peça>.svg` no build, sozinho. Onde cada peça fica, e quais
+aparecem no celular, está em `src/components/Dinheiro.astro`.
+
 ---
 
 ## Publicar na Vercel
