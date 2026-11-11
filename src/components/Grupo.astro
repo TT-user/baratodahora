@@ -1,14 +1,15 @@
 ---
-// Bloco "entrar no grupo". Só aparece se site.grupoWhatsApp tiver link.
+// Bloco "entrar no grupo" da home. Só aparece se algum grupo de
+// src/data/grupos.json tiver vaga, e leva direto a ele.
 // `forcar` existe só para o /styleguide mostrar o bloco sem link.
-import Icone from './Icone.astro';
-import { site } from '../site.config';
+import BotaoGrupo from './BotaoGrupo.astro';
+import { grupoAtual } from '../lib/grupos';
 
 interface Props {
   forcar?: boolean;
 }
 const { forcar = false } = Astro.props;
-const link = site.grupoWhatsApp || (forcar ? '#' : '');
+const link = grupoAtual?.link || (forcar ? '#' : '');
 ---
 
 {
@@ -23,18 +24,7 @@ const link = site.grupoWhatsApp || (forcar ? '#' : '');
           Quer receber <em>antes de todo mundo?</em>
         </h2>
         <p class="muted">As ofertas chegam no seu WhatsApp assim que eu acho. Só eu posto, sem conversa paralela.</p>
-        <a
-          class="btn btn--whats btn--nudge"
-          href={link}
-          target="_blank"
-          rel="noopener"
-          data-loja="grupo"
-          data-oferta="0"
-          data-local="grupo"
-        >
-          <Icone nome="whatsapp" />
-          Entrar no grupo
-        </a>
+        <BotaoGrupo local="grupo" href={link} />
         <p class="grupo__selos">
           <span>✓ Gratuito</span>
           <span>✓ Sai quando quiser</span>

@@ -1,0 +1,32 @@
+---
+// Botão "Entrar no grupo": leva ao grupo de WhatsApp que ainda tem vaga
+// (src/data/grupos.json). Sem grupo aberto não desenha nada; quem usa decide
+// o que mostrar no lugar. `href` existe só para o /styleguide.
+import Icone from './Icone.astro';
+import { grupoAtual } from '../lib/grupos';
+
+interface Props {
+  /** onde o botão está, para o rastreio de cliques (data-local) */
+  local: string;
+  href?: string;
+  nudge?: boolean;
+}
+const { local, href = grupoAtual?.link, nudge = true } = Astro.props;
+---
+
+{
+  href && (
+    <a
+      class:list={['btn btn--whats', { 'btn--nudge': nudge }]}
+      href={href}
+      target="_blank"
+      rel="noopener"
+      data-loja="grupo"
+      data-oferta="0"
+      data-local={local}
+    >
+      <Icone nome="whatsapp" />
+      Entrar no grupo
+    </a>
+  )
+}

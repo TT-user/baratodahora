@@ -16,7 +16,8 @@
     "nova-oferta": "node scripts/nova-oferta.mjs",
     "encerrar-oferta": "node scripts/encerrar-oferta.mjs",
     "destaque": "node scripts/destaque.mjs",
-    "desenhos": "node scripts/desenhos/gerar.mjs"
+    "desenhos": "node scripts/desenhos/gerar.mjs",
+    "grupo": "node scripts/grupo.mjs"
   },
   "dependencies": {
     "@astrojs/vercel": "^11.0.20",

@@ -282,7 +282,31 @@ export async function ogOferta(o: Oferta): Promise<Buffer> {
 
 /* ------------------------------------------------------------------ */
 
-export async function ogHome(): Promise<Buffer> {
+/** Textos do cartão de capa. Sem nada, é o da home; a /grupo troca os textos. */
+export interface TextosCapa {
+  faixa: string;
+  /** linhas do título antes da pílula */
+  antes: string[];
+  pilula: string;
+  pilulaFundo: string;
+  pilulaTexto: string;
+  /** linha do título depois da pílula */
+  depois: string;
+  sub: string;
+}
+
+const CAPA_HOME: TextosCapa = {
+  faixa: 'Oferta nova todo dia',
+  antes: ['Os achadinhos', 'dos vídeos,'],
+  pilula: 'BARATOS',
+  pilulaFundo: '#F25F0F',
+  pilulaTexto: '#fff',
+  depois: 'e num lugar só.',
+  sub: site.slogan,
+};
+
+export async function ogHome(textos: Partial<TextosCapa> = {}): Promise<Buffer> {
+  const t = { ...CAPA_HOME, ...textos };
   const avatar = await sharp(path.join(raiz, 'public', site.avatar)).resize(400, 400, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
   const avatarUri = `data:image/png;base64,${avatar.toString('base64')}`;
   const lojas = ['Shopee', 'Mercado Livre', 'Amazon', 'Cupons', 'Achadinhos', 'Shopee', 'Mercado Livre'];
@@ -344,7 +368,7 @@ export async function ogHome(): Promise<Buffer> {
         letterSpacing: 3,
         textTransform: 'uppercase',
       },
-      'Oferta nova todo dia',
+      t.faixa,
     ),
     // moldura com o avatar
     h(
@@ -391,8 +415,7 @@ export async function ogHome(): Promise<Buffer> {
         lineHeight: 1.08,
         color: TINTA,
       },
-      h('div', { display: 'flex' }, 'Os achadinhos'),
-      h('div', { display: 'flex' }, 'dos vídeos,'),
+      ...t.antes.map((linha) => h('div', { display: 'flex' }, linha)),
       h(
         'div',
         { display: 'flex', alignItems: 'center', gap: 16, margin: '6px 0 10px' },
@@ -401,22 +424,22 @@ export async function ogHome(): Promise<Buffer> {
           {
             display: 'flex',
             padding: '4px 18px 10px',
-            background: '#F25F0F',
+            background: t.pilulaFundo,
             textTransform: 'uppercase',
-            color: '#fff',
+            color: t.pilulaTexto,
             border: `5px solid ${TINTA}`,
             borderRadius: 18,
             boxShadow: `0 7px 0 0 ${TINTA}`,
             transform: 'rotate(-2deg)',
           },
-          'BARATOS',
+          t.pilula,
         ),
       ),
-      h('div', { display: 'flex' }, 'e num lugar só.'),
+      h('div', { display: 'flex' }, t.depois),
       h(
         'div',
         { display: 'flex', marginTop: 16, fontFamily: 'DM Sans', fontSize: 26, color: '#5B554C' },
-        site.slogan,
+        t.sub,
       ),
     ),
     // letreiro dourado

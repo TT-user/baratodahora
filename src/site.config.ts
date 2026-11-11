@@ -14,7 +14,8 @@ export const site = {
     tiktok: "https://tiktok.com/@obaratodahora",     // TODO: confirmar @
     instagram: "https://instagram.com/baratodahora", // TODO: confirmar @
   },
-  grupoWhatsApp: "", // se vazio, esconde todos os blocos de "entrar no grupo"
+  // Grupos de WhatsApp: em src/data/grupos.json (npm run grupo). Sem grupo com
+  // vaga, o bloco da home some e a página /grupo mostra "abre em breve".
   avisoAfiliado:
     "Alguns links são de afiliado: posso ganhar uma comissão, sem custo extra pra você. Preços e estoque mudam rápido; confira na loja.",
   contato: "", // TODO: e-mail de contato (aparece na página de privacidade)

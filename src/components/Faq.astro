@@ -1,10 +1,16 @@
 ---
+interface Pergunta {
+  p: string;
+  r: string[];
+}
 interface Props {
   titulo?: string;
+  /** outra lista de perguntas (a do /grupo); sem ela, as da home */
+  perguntas?: Pergunta[];
 }
-const { titulo = 'Dúvidas rápidas' } = Astro.props;
+const { titulo = 'Dúvidas rápidas', perguntas: outras } = Astro.props;
 
-const perguntas = [
+const daHome: Pergunta[] = [
   {
     p: 'Os links são seguros?',
     r: [
@@ -27,6 +33,7 @@ const perguntas = [
     ],
   },
 ];
+const perguntas = outras ?? daHome;
 ---
 
 <section class="secao" aria-labelledby="faq-titulo">

@@ -8,6 +8,8 @@ comprar na Shopee, no Mercado Livre ou na Amazon.
 - **Página da oferta `/o/<slug>`**: foto, preço, cupom, botão da loja do vídeo e "também encontrei".
 - **Atalho `/231`**: leva direto para a oferta 231 (301 de verdade na Vercel).
 - **Oferta encerrada**: a página continua no ar, sem link de loja, mostrando as que estão valendo.
+- **Grupo `/grupo`**: página para encher os grupos de WhatsApp. Sem cadastro: o botão leva direto
+  ao grupo que ainda tem vaga (veja "Grupos de WhatsApp", abaixo).
 
 Astro 7 + TypeScript, site estático. Sem React e sem Tailwind. O JavaScript da home tem ~6 KB
 (4 KB transferidos).
@@ -120,11 +122,37 @@ Regras (o build recusa a oferta que não seguir, dizendo o que está errado):
 
 ---
 
+## Grupos de WhatsApp
+
+A página `/grupo` existe para encher os grupos de ofertas. Não pede cadastro: o botão "Entrar no
+grupo" abre direto o convite do **primeiro grupo da lista que não está cheio**. O bloco "entrar no
+grupo" da home e o link "Grupo" do rodapé usam a mesma lista, em `src/data/grupos.json`.
+
+Cada grupo de WhatsApp aceita até 1.024 pessoas. Quando um encher, marque como cheio e o botão passa
+sozinho para o próximo (depois do push, ~1 min):
+
+```bash
+npm run grupo                                     # mostra a lista e qual está recebendo gente
+npm run grupo -- novo https://chat.whatsapp.com/...   # grupo novo no fim da fila
+npm run grupo -- cheio 2                          # grupo 2 encheu
+npm run grupo -- reabrir 2                        # grupo 2 voltou a ter vaga
+npm run grupo -- trocar 2 https://chat.whatsapp.com/...  # redefiniu o convite no WhatsApp
+```
+
+No Claude Code: `/grupo cheio 2`, `/grupo novo <link>` (faz o build, o commit e o push).
+
+- Sem nenhum grupo: a página mostra "O grupo abre em breve", o bloco da home some e o rodapé não
+  mostra o link.
+- Todos cheios: a página mostra "Os grupos lotaram" e manda para as ofertas do site.
+- Com grupo cheio na lista, a página diz quantos já lotaram (é a conta da lista, não inventada).
+- Dica: deixe o próximo grupo criado e na fila (`novo`) antes de o atual encher; aí é só `cheio`.
+
+---
+
 ## Marca
 
-Tudo que é da marca fica em `src/site.config.ts`: nome, slogan, domínio, redes, link do grupo de
-WhatsApp, aviso de afiliado e e-mail de contato. Com `grupoWhatsApp` vazio, o bloco "entrar no
-grupo" não aparece em lugar nenhum.
+Tudo que é da marca fica em `src/site.config.ts`: nome, slogan, domínio, redes, aviso de afiliado
+e e-mail de contato. Os grupos de WhatsApp ficam em `src/data/grupos.json` (seção acima).
 
 A identidade vem do banner do canal (`marca/capa-youtube.png`): amarelo `#FFD60A`, vermelho
 `#D62828`, preto, as caixas de encomenda com etiqueta de % e o logo "BARATO [DA HORA]" na Anton.

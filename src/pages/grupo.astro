@@ -1,0 +1,305 @@
+---
+// /grupo: página para encher os grupos de WhatsApp. Sem cadastro: o botão
+// leva direto ao grupo que ainda tem vaga (src/data/grupos.json). Quando um
+// enche, `npm run grupo -- cheio <n>` e o botão passa para o próximo.
+import Base from '../layouts/Base.astro';
+import BotaoGrupo from '../components/BotaoGrupo.astro';
+import Deco from '../components/Deco.astro';
+import FaixaTopo from '../components/FaixaTopo.astro';
+import Faq from '../components/Faq.astro';
+import FrameStack from '../components/FrameStack.astro';
+import Icone from '../components/Icone.astro';
+import MiniCard from '../components/MiniCard.astro';
+import Rodape from '../components/Rodape.astro';
+import Sticky from '../components/Sticky.astro';
+import { LIMITE_WHATSAPP } from '../lib/grupo-schema.mjs';
+import { grupoAtual, grupos, gruposCheios } from '../lib/grupos';
+import { ofertasAtivas } from '../lib/ofertas';
+import { site } from '../site.config';
+
+const amostra = (await ofertasAtivas()).slice(0, 4);
+const lotou = !grupoAtual && grupos.length > 0;
+
+const titulo = `Grupo de ofertas no WhatsApp · ${site.nome}`;
+const descricao = `Entre no grupo do ${site.nome} e receba os achadinhos no WhatsApp. Gratuito, só eu posto e você sai quando quiser.`;
+
+const passos = [
+  { t: 'Toque em “Entrar no grupo”', d: 'O WhatsApp abre com o convite do grupo.' },
+  { t: 'Confirme no WhatsApp', d: 'Na tela do convite, toque no botão para entrar.' },
+  {
+    t: 'Pronto',
+    d: 'Os achados chegam junto com as suas conversas. Pode silenciar o grupo: as ofertas continuam lá quando você abrir.',
+  },
+];
+
+const perguntas = [
+  { p: 'Quanto custa para entrar?', r: ['Nada. O grupo é gratuito.'] },
+  { p: 'Vou receber mensagem de todo mundo?', r: ['Não. Só eu posto no grupo, sem conversa paralela.'] },
+  {
+    p: 'Por que tem mais de um grupo?',
+    r: [
+      `Cada grupo de WhatsApp aceita até ${LIMITE_WHATSAPP.toLocaleString('pt-BR')} pessoas. Quando um lota, abro o próximo, e o botão desta página passa a levar para ele.`,
+    ],
+  },
+  {
+    p: 'Como eu saio?',
+    r: ['Quando quiser: abra o grupo, toque no nome dele lá em cima e depois em “Sair do grupo”.'],
+  },
+  {
+    p: 'Por que tem link de afiliado?',
+    r: [
+      'Quando você compra por um link meu, a loja me paga uma pequena comissão. Você não paga nada a mais por isso.',
+      'É essa comissão que mantém o canal garimpando oferta todo dia.',
+    ],
+  },
+];
+---
+
+<Base
+  titulo={titulo}
+  descricao={descricao}
+  caminho="/grupo"
+  og={{
+    imagem: '/og-grupo.png',
+    largura: 1200,
+    altura: 630,
+    tipo: 'image/png',
+    alt: `${site.nome}: os achadinhos chegam no seu WhatsApp`,
+  }}
+  classe="pg-grupo"
+>
+  <FaixaTopo texto="Grupo de ofertas no WhatsApp" />
+
+  <header class="hero" id="topo-grupo">
+    <Deco />
+    <div class="wrap hero__in">
+      <FrameStack />
+      <h1>
+        Os achadinhos chegam no seu <span class="pill pill--zap">WhatsApp</span>
+      </h1>
+      <p class="hero__sub">Assim que eu acho, mando no grupo. Só eu posto, sem conversa paralela.</p>
+
+      {
+        grupoAtual ? (
+          <div class="hero__cta">
+            <BotaoGrupo local="grupo-topo" />
+            <p class="selos">
+              <span>✓ Gratuito</span>
+              <span>✓ Sai quando quiser</span>
+            </p>
+            {gruposCheios > 0 && (
+              <p class="lotados">
+                <b>{gruposCheios === 1 ? '1 grupo já lotou.' : `${gruposCheios} grupos já lotaram.`}</b> O botão leva
+                ao grupo {grupoAtual.numero}, que ainda tem vaga.
+              </p>
+            )}
+          </div>
+        ) : (
+          <div class="espera brick">
+            <p class="espera__titulo">{lotou ? 'Os grupos lotaram' : 'O grupo abre em breve'}</p>
+            <p class="muted">
+              {lotou ? 'O próximo abre por aqui. ' : 'Volte daqui a pouco. '}
+              Enquanto isso, os achados estão todos no site.
+            </p>
+            <a class="btn btn--gold btn--sm" href="/">
+              Ver as ofertas <Icone nome="seta" />
+            </a>
+          </div>
+        )
+      }
+    </div>
+  </header>
+
+  {
+    grupoAtual && (
+      <section class="passos dark" id="passos" aria-labelledby="passos-titulo">
+        <div class="wrap passos__in">
+          <p class="eyebrow">Em 3 passos</p>
+          <h2 id="passos-titulo">
+            Como <em>entrar</em>
+          </h2>
+          <ol class="passos__lista">
+            {passos.map((p, i) => (
+              <li class="passo">
+                <span class="passo__num">{i + 1}</span>
+                <span>
+                  <strong>{p.t}</strong>
+                  <span class="muted">{p.d}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+          <BotaoGrupo local="grupo-passos" nudge={false} />
+        </div>
+      </section>
+    )
+  }
+
+  <main id="conteudo" class="wrap">
+    {
+      amostra.length > 0 && (
+        <section class="amostra" aria-labelledby="amostra-titulo">
+          <p class="eyebrow">Pra você ter uma ideia</p>
+          <h2 id="amostra-titulo">Os achados mais recentes</h2>
+          <ul class="amostra__grade">
+            {amostra.map((o) => (
+              <li>
+                <MiniCard oferta={o} />
+              </li>
+            ))}
+          </ul>
+          <a class="btn btn--ink" href="/">
+            Ver todas as ofertas <Icone nome="seta" />
+          </a>
+        </section>
+      )
+    }
+
+    <Faq titulo="Antes de entrar" perguntas={perguntas} />
+  </main>
+
+  <Rodape />
+
+  {
+    grupoAtual && (
+      <Sticky alvo="#topo-grupo .btn, #passos .btn">
+        <BotaoGrupo local="grupo-fixo" nudge={false} />
+      </Sticky>
+    )
+  }
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: clip;
+    padding-bottom: 40px;
+  }
+  .hero__in {
+    z-index: 1;
+    text-align: center;
+  }
+  .hero h1 {
+    margin-top: 12px;
+  }
+  .pill--zap {
+    background: var(--whats);
+    color: var(--ink);
+  }
+  .hero__sub {
+    max-width: 340px;
+    margin: 12px auto 22px;
+    color: var(--muted);
+    font-size: 16.5px;
+  }
+  .hero__cta {
+    display: grid;
+    gap: 14px;
+  }
+  .selos {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 4px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .lotados {
+    max-width: 330px;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: 14.5px;
+  }
+  .lotados b {
+    color: var(--red-txt);
+  }
+  .espera {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding: 20px 18px 22px;
+  }
+  .espera__titulo {
+    font: 400 20px/1.15 var(--display);
+  }
+  .espera .btn {
+    margin-top: 8px;
+  }
+  /* celular baixo (iPhone SE): o botão precisa caber na primeira tela */
+  @media (max-height: 740px) and (max-width: 600px) {
+    .hero h1 {
+      margin-top: 6px;
+      font-size: 27px;
+    }
+    .hero__sub {
+      margin: 8px auto 16px;
+      font-size: 15.5px;
+    }
+  }
+
+  .passos__in {
+    display: grid;
+    gap: 12px;
+    padding-top: 46px;
+    padding-bottom: 52px;
+  }
+  .passos .eyebrow {
+    color: var(--gold);
+  }
+  .passos__lista {
+    display: grid;
+    gap: 12px;
+    margin: 10px 0 16px;
+  }
+  .passo {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: start;
+    gap: 14px;
+    padding: 14px 16px;
+    background: #24211d;
+    border: 2.5px solid #3a362f;
+    border-radius: 14px;
+  }
+  .passo strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 16.5px;
+  }
+  .passo .muted {
+    display: block;
+    font-size: 15px;
+  }
+  .passo__num {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    background: var(--whats);
+    color: var(--ink);
+    border: 2.5px solid var(--ink);
+    border-radius: 12px;
+    box-shadow: 0 4px 0 0 var(--gold);
+    font: 400 20px/1 var(--display);
+  }
+
+  .amostra {
+    padding-top: 46px;
+    text-align: center;
+  }
+  .amostra .eyebrow {
+    color: var(--red-txt);
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+  }
+  .amostra h2 {
+    margin: 8px 0 22px;
+  }
+  .amostra__grade {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 14px;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+</style>

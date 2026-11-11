@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { msData, ofertasAtivas, urlOferta } from '../lib/ofertas';
 import { urlDoSite } from '../site.config';
 
-// Home, privacidade e as ofertas ativas. Os atalhos /231 (redirects) e as
+// Home, grupo, privacidade e as ofertas ativas. Os atalhos /231 (redirects) e as
 // ofertas encerradas (noindex) ficam de fora.
 export const GET: APIRoute = async () => {
   const ativas = await ofertasAtivas();
@@ -13,6 +13,7 @@ export const GET: APIRoute = async () => {
   const urls = [
     { loc: abs('/'), lastmod: maisRecente },
     ...ativas.map((o) => ({ loc: abs(urlOferta(o)), lastmod: dia(o.precoVistoEm ?? o.publicadoEm) })),
+    { loc: abs('/grupo') },
     { loc: abs('/privacidade') },
   ];
 

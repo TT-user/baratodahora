@@ -2,8 +2,11 @@
 import Logo from './Logo.astro';
 import Redes from './Redes.astro';
 import { site } from '../site.config';
+import { grupos } from '../lib/grupos';
 
 const ano = new Date().getFullYear();
+// o link do /grupo só aparece depois que o primeiro grupo entrar na lista
+const temGrupo = grupos.length > 0;
 ---
 
 <footer class="rodape dark">
@@ -21,6 +24,14 @@ const ano = new Date().getFullYear();
     <p class="rodape__links">
       <a href="/">Todas as ofertas</a>
       <span aria-hidden="true">·</span>
+      {
+        temGrupo && (
+          <>
+            <a href="/grupo">Grupo</a>
+            <span aria-hidden="true">·</span>
+          </>
+        )
+      }
       <a href="/privacidade">Privacidade</a>
     </p>
     <p class="rodape__copy">© {ano} {site.nome}</p>
@@ -64,6 +75,7 @@ const ano = new Date().getFullYear();
   }
   .rodape__links {
     display: flex;
+    align-items: center;
     gap: 10px;
     font-weight: 700;
     font-size: 14.5px;
